@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from gardens.views import home_view
+from gardens.views import home_view, landing_page_view
 
 urlpatterns = [
     path('', home_view, name='home'), # Change the index page
+    path('landingPage/', landing_page_view, name='landing_page'), # Change the index page
 
     path("users/", include("users.urls")),
 
