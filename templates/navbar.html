@@ -1,0 +1,36 @@
+<nav class="container-xxl navbar navbar-expand-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand py-1 bd-navbar-link" href="{% url 'home' %}">Greener Gardens</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapsable" aria-controls="navbarCollapsable" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapsable">
+      <ul class="navbar-nav navbar-left me-auto mb-2 mb-sm-0">
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link bd-navbar-link" href="">Create</a>
+        </li>
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav navbar-right ms-auto mb-2 mb-sm-0">
+        {% if not user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link btn bd-btn-secondary" href="{% url 'users:login' %}">Login / Register</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <div class="btn-group">
+            <button type="button" class="dropdown-toggle btn bd-btn-secondary" data-bs-toggle="dropdown" data-bs-target="#dropdown-profile" aria-expanded="false">
+              Hello,
+              {{ user.username }}
+            </button>
+            <ul class="dropdown-menu" id="dropdown-profile">
+              <li><a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a></li>
+            </ul>  
+          </div>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
