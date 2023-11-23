@@ -1,6 +1,45 @@
 {% extends 'base.html' %}
 
+{% block header %}
+<script>
+
+    /**
+     * Redirect the user after X seconds 
+     */
+    function redirect(){
+        let e = document.getElementById('time_left');
+        let time_to_redirect = e.dataset.time;
+        let timer = setInterval(function(){update_counter(e)}, 1000);
+    }
+
+    window.onload = function() {
+        redirect();
+    }
+
+    /**
+     * Update the count left ever second 
+     */
+    function update_counter(e){
+        let time_to_redirect = Number(e.dataset.time);
+        time_to_redirect = time_to_redirect - 1;
+
+        // Update variables
+        e.innerText = time_to_redirect;
+        e.dataset.time = time_to_redirect;
+
+        if(time_to_redirect == 0){
+            let link_element = document.getElementById('home_page_url');
+            let url = link_element.getAttribute('href');
+            // HTTP redirect
+            window.location.replace(url);
+        }
+    }
+</script>
+{% endblock %}
+
+
 {% block content %}
 {% load static %}
 <h1>You have been successfully logged out.</h1>
+<p>You will be redirected to the home page in <span id="time_left" data-time="5" class="text-primary fw-bold">5</span> seconds, or <a id="home_page_url" href="{% url 'home' %}">click here.</a></p>
 {% endblock %}
