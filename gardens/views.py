@@ -3,6 +3,8 @@ from django.shortcuts import redirect, render
 from gardens.models import Garden
 from .forms import GardenForm
 
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def home_view(request, *args, **kwargs):
     my_context = {
@@ -14,6 +16,7 @@ def home_view(request, *args, **kwargs):
 
     return render(request, "home.html", my_context) # return an html template
 
+@login_required
 def landing_page_view(request, *args, **kwargs):
     current_user = request.user
     my_context = {
@@ -22,9 +25,17 @@ def landing_page_view(request, *args, **kwargs):
     }
     return render(request, "landing.html", my_context) # return an html template
 
-def garden_create_view(request, *args, **kwargs):
+@login_required
+def garden_create_view(request, garden_id, *args, **kwargs):
+    """ Create or edit an existing portfolio item. New items have an id of 0 """
+    form = GardenForm(request.POST or None)
+    try:
+        instance = Garden.objects.get(pk=garden_id)
+    except Garden.DoesNotExist:
+        instance = None
+
     if request.method == "POST":
-        form = GardenForm(request.POST)
+        form = GardenForm(request.POST, request.FILES, instance=instance)
 
         if form.is_valid():
             form.cleaned_data['user'] = request.user # Set to the current logged in user
@@ -32,10 +43,17 @@ def garden_create_view(request, *args, **kwargs):
             form.save()
             return redirect("home")
     else: # GET request
-        form = GardenForm()
+        form = GardenForm(instance=instance)
         form.initial['user'] = request.user.id # Set to the current logged in user
+
+    site_title = None
+    if garden_id == 0:
+        site_title = "Create Garden"
+    else:
+        site_title = "Edit Garden"
+
     my_context = {
         "form": form,
-        "site_title": "Create Garden"
+        "site_title": site_title
     }
     return render(request, "users/garden_create.html", my_context) # return an html template

@@ -7,5 +7,7 @@ class GardenForm(forms.ModelForm):
         fields = "__all__"
         widgets =   { 
             'name': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'image': forms.FileInput(attrs={'class':"form-control", "type":"file"}),
+            'image_alt': forms.TextInput(attrs={'class': 'form-control'}),
             'user': forms.HiddenInput(),
         }
