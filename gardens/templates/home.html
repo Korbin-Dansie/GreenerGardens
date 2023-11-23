@@ -2,9 +2,21 @@
 
 {% block content %}
 {% load static %}
-<h2>Home Page</h2>
-<div class="card">
-    <div class="card-body">
-    </div>    
-</div>
+    <div class="mb-4 text-center">
+        <div>
+            <h2 class="display-2 fw-bold">Make your <span class="text-primary">Garden Greener!</span></h2>
+        </div>
+    </div>
+    <div class="col-lg-6 mx-auto mb-5 text-center">
+        <div>
+            <p class="lead">Quickly store and manage information about your garden.</p>
+        </div>
+    </div>
+
+    <div class="lc-block d-grid gap-2 d-sm-flex justify-content-sm-center mb-5"> <a class="btn btn-primary btn-lg px-4 gap-3" href="{% url 'users:login' %}" role="button">Login</a>
+        <a class="btn btn-outline-secondary btn-lg px-4" href="{% url 'users:register' %}" role="button">Register</a>
+    </div>
+    <div class="lc-block d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <img class="img-fluid" src="{% static 'images/jonathan-kemper-4z3lnwEvZQw-unsplash.jpg' %}" width="" height="700" srcset="" sizes="" alt="">
+    </div>
 {% endblock %}
