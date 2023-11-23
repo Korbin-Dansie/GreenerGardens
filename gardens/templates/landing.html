@@ -9,7 +9,7 @@
   <div class="col-md-3 d-flex align-items-stretch">
     <!-- Add Garden -->
     <a href="{% url 'garden_create' 0 %}" class="w-100">
-        {% if garden.image != None %}
+        {% if garden.image.url != None %}
         <div class="bg-image bg-primary card shadow w-100 ratio ratio-16x9" style="background-image: url('{{garden.image.url}}'); background-repeat: no-repeat; background-position: center; background-size: contain;">
         {% else %}
         <div class="bg-primary card shadow w-100 ratio ratio-16x9">
