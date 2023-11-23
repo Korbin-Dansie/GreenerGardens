@@ -6,26 +6,33 @@
 
 <div class="row">
   {% for garden in gardens %}
-  <div class="col-md-4 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">{{garden.name}}</h5>
-        <p>
-        </p>
-      </div>
-    </div>
-  </div>
-
-  {% endfor %}
-  <div class="col-md-3 d-flex align-items-stretch" >
+  <div class="col-md-3 d-flex align-items-stretch">
     <!-- Add Garden -->
-    <div class="bg-image bg-primary card shadow w-100 ratio ratio-16x9" style="background-image: url('/static/images/add.png'); background-repeat: no-repeat; background-position: center; background-size: contain;">
-      <div class="card-body text-white">
-        <h3 class="card-title">Add Garden</h3>
-        <p class="card-text">
-        </p>
+    <a href="{% url 'garden_create' 0 %}" class="w-100">
+      <div class="bg-image bg-primary card shadow w-100 ratio ratio-16x9" style="background-image: url('/static/images/add.png'); background-repeat: no-repeat; background-position: center; background-size: contain;">
+        <div class="card-body text-white">
+          <h3 class="card-title"><span class="bg-dark px-2 rounded" style="--bs-bg-opacity: .5;">{{garden.name}}</span></h3>
+
+          <p class="card-text">
+          </p>
+        </div>
       </div>
-    </div>
+    </a>
+    <!-- End of Add Garden -->
+  </div>
+  {% endfor %}
+
+  <div class="col-md-3 d-flex align-items-stretch">
+    <!-- Add Garden -->
+    <a href="{% url 'garden_create' 0 %}" class="w-100">
+      <div class="bg-image bg-primary card shadow w-100 ratio ratio-16x9" style="background-image: url('/static/images/add.png'); background-repeat: no-repeat; background-position: center; background-size: contain;">
+        <div class="card-body text-white">
+          <h3 class="card-title"><span class="bg-dark px-2 rounded" style="--bs-bg-opacity: .5;">Add Garden</span></h3>
+          <p class="card-text">
+          </p>
+        </div>
+      </div>
+    </a>
     <!-- End of Add Garden -->
   </div>
 </div>

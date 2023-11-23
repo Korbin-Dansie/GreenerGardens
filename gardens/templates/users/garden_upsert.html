@@ -7,7 +7,7 @@
 
 {% block content %}
 {% load static %}
-{% if story.id != None %}
+{% if garden.id != None %}
 <h1>Edit Garden</h1>
 {% else %}
 <h1>Create Garden</h1>
@@ -20,7 +20,7 @@
       {{ form.as_p }}
       <!-- Start of Submit buttons -->
       <div class="d-flex">
-        {% if story.id != None %}
+        {% if garden.id != None %}
         <div class="">
           <button type="button" class="btn btn-danger shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
             <span>
@@ -33,9 +33,9 @@
         <div class="ms-auto">
           <a href="{% url 'home' %}" class="btn btn-secondary shadow-sm">Cancel</a>
           {% if story.id != None %}
-          <input href="{% url 'mablibs_edit' story.author story.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
+          <input href="{% url 'garden_edit' garden.user garden.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% else %}
-          <input href="{% url 'mablibs_create' %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
+          <input href="{% url 'garden_create' 0 %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% endif %}
         </div>
       </div>
@@ -43,33 +43,19 @@
     </form>
   </div>
 </div>
-{% if story.id == None %}
-<!-- Start of Key -->
-<div class="card my-2">
-    <div class="card-body">
-        <h5 class="card-title">Key</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Type [ ] with your prompt between</h6>    
-        <button class="btn btn-info" onclick="add_prompt(this)">[noun]</button>
-        <button class="btn btn-info" onclick="add_prompt(this)">[verb]</button>
-        <button class="btn btn-info" onclick="add_prompt(this)">[adjective]</button>
-        <button class="btn btn-info" onclick="add_prompt(this)">[adverb]</button>
-        <button class="btn btn-info" onclick="add_prompt(this)">[custom]</button>
-    </div>
-</div>
-{% endif %}
 
-{% if story.id != None %}
+{% if garden.id != None %}
 <!-- Start of modal-->
 <div class="modal" id="deleteModal" tabindex="-1">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Delete Story</h5>
+				<h5 class="modal-title">Delete Garden</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<p>Are you sure you want to <b class="text-danger">delete</b> this story?</p>
-				<p><b>{{story.title}}</b>?</p>
+				<p>Are you sure you want to <b class="text-danger">delete</b> this garden?</p>
+				<p><b>{{garden.name}}</b>?</p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

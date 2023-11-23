@@ -22,7 +22,7 @@ def landing_page_view(request, *args, **kwargs):
     }
     return render(request, "landing.html", my_context) # return an html template
 
-def create_garden_view(request, *args, **kwargs):
+def garden_create_view(request, *args, **kwargs):
     if request.method == "POST":
         form = GardenForm(request.POST)
 
@@ -38,4 +38,4 @@ def create_garden_view(request, *args, **kwargs):
         "form": form,
         "site_title": "Create Garden"
     }
-    return render(request, "users/user_post_create.html", my_context) # return an html template
+    return render(request, "users/garden_create.html", my_context) # return an html template
