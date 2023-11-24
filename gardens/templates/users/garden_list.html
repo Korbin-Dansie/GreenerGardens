@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block header %}
+
+{% endblock %}
+
+
+{% block content %}
+{% load static %}
+<h1>Manage Gardens</h1>
+
+<div class="card shadow">
+    <div class="card-body">
+      <p class="card-text">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Edit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for garden in gardens %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ garden.name }}</td>
+                <td>
+                    <a href="{% url 'garden_update' request.user.username garden.id %}" class="btn btn-warning shadow-sm">Edit</a>
+                    <a href="{% url 'garden_create' 0 %}" class="btn btn-primary shadow-sm">View</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+      </p>
+    </div>
+  </div>
+  
+
+
+
+{% endblock %}

@@ -10,6 +10,9 @@
         <li class="nav-item">
           <a class="nav-link bd-navbar-link text-light" href="">Create</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link bd-navbar-link text-light" href="{% url 'garden_list' request.user.username %}">Manage Gardens</a>
+        </li>
         {% endif %}
       </ul>
       <ul class="navbar-nav navbar-right ms-auto mb-2 mb-sm-0">
