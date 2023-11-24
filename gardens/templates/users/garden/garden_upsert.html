@@ -35,7 +35,7 @@
           {% if story.id != None %}
           <input href="{% url 'garden_edit' garden.user garden.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% else %}
-          <input href="{% url 'garden_create' 0 %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
+          <input href="{% url 'garden_create' request.user.username %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% endif %}
         </div>
       </div>

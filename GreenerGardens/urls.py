@@ -28,7 +28,7 @@ urlpatterns = [
 
 
     path('users/<str:username>/gardens/', garden_list_view, name='garden_list'), # Display a list of gardens to edit
-    path('garden/<int:garden_id>/', garden_create_view, name='garden_create'), # Create a new garden
+    path('users/<str:username>/gardens/create', garden_create_view, name='garden_create'), # Create a new garden
     path('users/<str:username>/gardens/<int:garden_id>/', garden_update_view, name='garden_update'), # Edit on on the users gardens
     path('users/<str:username>/gardens/<int:garden_id>/delete/', garden_delete_view, name='garden_delete'), # Edit one of the user posts
 

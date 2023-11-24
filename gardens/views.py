@@ -29,16 +29,12 @@ def landing_page_view(request, *args, **kwargs):
     Pages to manage Gardens
 """
 @login_required
-def garden_create_view(request, garden_id, *args, **kwargs):
+def garden_create_view(request, username, *args, **kwargs):
     """ Create or edit an existing portfolio item. New items have an id of 0 """
     form = GardenForm(request.POST or None)
-    try:
-        instance = Garden.objects.get(pk=garden_id)
-    except Garden.DoesNotExist:
-        instance = None
 
     if request.method == "POST":
-        form = GardenForm(request.POST, request.FILES, instance=instance)
+        form = GardenForm(request.POST, request.FILES)
 
         if form.is_valid():
             form.cleaned_data['user'] = request.user # Set to the current logged in user
@@ -46,11 +42,11 @@ def garden_create_view(request, garden_id, *args, **kwargs):
             form.save()
             return redirect("home")
     else: # GET request
-        form = GardenForm(instance=instance)
+        form = GardenForm()
         form.initial['user'] = request.user.id # Set to the current logged in user
 
     site_title = None
-    if garden_id == 0:
+    if form.instance.pk == None:
         site_title = "Create Garden"
     else:
         site_title = "Edit Garden"
@@ -59,7 +55,7 @@ def garden_create_view(request, garden_id, *args, **kwargs):
         "form": form,
         "site_title": site_title
     }
-    return render(request, "users/garden_create.html", my_context) # return an html template
+    return render(request, "users/garden/garden_create.html", my_context) # return an html template
 
 @login_required
 def garden_update_view(request, username, garden_id, *args, **kwargs):
@@ -99,7 +95,7 @@ def garden_update_view(request, username, garden_id, *args, **kwargs):
         "garden": instance,
         "site_title": site_title
     }
-    return render(request, "users/garden_upsert.html", my_context) # return an html template
+    return render(request, "users/garden/garden_upsert.html", my_context) # return an html template
 
 @login_required
 def garden_delete_view(request, username, garden_id, *args, **kwargs):
@@ -129,4 +125,4 @@ def garden_list_view(request, username, *args, **kwargs):
         "gardens": Garden.objects.filter(user=current_user),
         "site_title": "My Gardens"
     }
-    return render(request, "users/garden_list.html", my_context) # return an html template
+    return render(request, "users/garden/garden_list.html", my_context) # return an html template
