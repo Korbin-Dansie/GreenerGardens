@@ -96,10 +96,26 @@ def garden_update_view(request, username, garden_id, *args, **kwargs):
 
     my_context = {
         "form": form,
+        "garden": instance,
         "site_title": site_title
     }
     return render(request, "users/garden_upsert.html", my_context) # return an html template
 
+@login_required
+def garden_delete_view(request, username, garden_id, *args, **kwargs):
+    # Check if the user has privilege to access the post
+    instance = Garden.objects.filter(user=request.user, id=garden_id)[:1] # Limit to the first post
+    if(instance is None):
+        redirect("users:login")
+    
+    form = GardenForm(instance=instance[0])
+    # Update the entires
+    if request.method == "POST":
+        form = GardenForm(request.POST, instance=instance[0])
+        if form.is_valid():
+            instance[0].delete()
+            return redirect("home")
+    return redirect("home")
 
 @login_required
 def garden_list_view(request, username, *args, **kwargs):
