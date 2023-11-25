@@ -7,36 +7,65 @@
 
 {% block content %}
 {% load static %}
-<h1>{{garden.name}}</h1>
-
-
-<div class="card shadow">
-    <div class="card-body">
-      <p class="card-text">
-        <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Edit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for section in sections %}
-              <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ section.name }}</td>
-                <td>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-      </p>
+<div class="card shadow mb-2">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-6">
+        <h1 class="text-secondary">{{garden.name}}</h1>
+      </div>
+      <div class="col-6">
+        <!-- Start of Submit buttons -->
+        <div class="h-100 d-flex align-items-center">
+          <div class="ms-auto">
+            <a href="{% url 'garden_update' request.user.username garden.id %}" class="btn btn-warning shadow-sm">
+              Edit Garden
+            </a>
+            <a href="{% url 'garden_section_create' request.user.username garden.id %}" class="btn btn-primary shadow-sm">
+              Add Section
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+                </svg>  
+            </a>
+          </div>
+        </div>
+        <!-- End of Submit buttons -->
+      </div>
     </div>
   </div>
-  
+</div>
 
+{% for section in sections %}
+<div class="card shadow mb-2">
+  <h5 class="card-title">
+    {{ section.name }}
+  </h5>
+  <div class="card-body">
+    <p class="card-text">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Edit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">
+            {{ forloop.counter }}
+          </th>
+          <td>
+            {{ section.name }}
+          </td>
+          <td>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </p>
+  </div>
+</div>
+{% endfor %}
 
 
 {% endblock %}

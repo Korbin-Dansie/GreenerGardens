@@ -7,10 +7,10 @@
 
 {% block content %}
 {% load static %}
-{% if garden.id != None %}
-<h1>Edit Garden</h1>
+{% if garden_section.id != None %}
+<h1 class="text-secondary mb-2">Edit Section - {{garden.name}} </h1>
 {% else %}
-<h1>Create Garden</h1>
+<h1 class="text-secondary mb-2">Create Section - {{garden.name}} </h1>
 {% endif %}
 
 <div class="card">
@@ -20,7 +20,7 @@
       {{ form.as_p }}
       <!-- Start of Submit buttons -->
       <div class="d-flex">
-        {% if garden.id != None %}
+        {% if garden_section.id != None %}
         <div class="">
           <button type="button" class="btn btn-danger shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
             <span>
@@ -32,10 +32,10 @@
         {% endif %}
         <div class="ms-auto">
           <a href="{% url 'home' %}" class="btn btn-secondary shadow-sm">Cancel</a>
-          {% if garden.id != None %}
-          <input href="{% url 'garden_update' garden.user.username garden.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
+          {% if story.id != None %}
+          <input href="{% url 'garden_section_update' garden.user garden.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% else %}
-          <input href="{% url 'garden_create' request.user.username %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
+          <input href="{% url 'garden_section_create' request.user.username garden.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% endif %}
         </div>
       </div>
@@ -45,7 +45,7 @@
   </div>
 </div>
 
-{% if garden.id != None %}
+{% if garden_section.id != None %}
 <!-- Start of modal-->
 <div class="modal" id="deleteModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
