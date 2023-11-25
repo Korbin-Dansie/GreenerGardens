@@ -31,9 +31,9 @@
         </div>
         {% endif %}
         <div class="ms-auto">
-          <a href="{% url 'home' %}" class="btn btn-secondary shadow-sm">Cancel</a>
+          <a href="{% url 'garden_section_list' request.user.username garden.id %}" class="btn btn-secondary shadow-sm">Cancel</a>
           {% if story.id != None %}
-          <input href="{% url 'garden_section_update' garden.user garden.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
+          <input href="{% url 'garden_section_update' garden.user garden.id section_id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% else %}
           <input href="{% url 'garden_section_create' request.user.username garden.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% endif %}

@@ -59,7 +59,7 @@ def garden_create_view(request, username, *args, **kwargs):
 
 @login_required
 def garden_update_view(request, username, garden_id, *args, **kwargs):
-    """ Create or edit an existing garden item. New gardens have an id of 0 """
+    """ Create or edit an existing garden item. New entries have an id of 0 """
     form = GardenForm(request.POST or None)
     try:
         instance = Garden.objects.get(pk=garden_id)
@@ -156,9 +156,9 @@ def garden_section_create_view(request, username, garden_id, *args, **kwargs):
     form = Garden_SectionForm(request.POST or None)
     
     try:
-        instance = Garden.objects.get(user=request.user, pk=garden_id)
+        user_garden = Garden.objects.get(user=request.user, pk=garden_id)
     except Garden.DoesNotExist:
-        instance = None
+        user_garden = None
 
 
     if request.method == "POST":
@@ -169,7 +169,7 @@ def garden_section_create_view(request, username, garden_id, *args, **kwargs):
             form.cleaned_data['garden'] = form.cleaned_data['garden']
 
             # Check if forms garden id is in users gardens that they made
-            if(instance == None):
+            if(user_garden == None):
                 return redirect("home")
 
             # save the info
@@ -187,7 +187,54 @@ def garden_section_create_view(request, username, garden_id, *args, **kwargs):
 
     my_context = {
         "form": form,
-        "garden": instance, # Get first garden
+        "garden": user_garden, # Get first garden
+        "site_title": site_title
+    }
+    return render(request, "users/garden_section/garden_section_create.html", my_context) # return an html template
+
+@login_required
+def garden_section_update_view(request, username, garden_id, section_id, *args, **kwargs):
+    """ Create or edit an existing garden section. New entries have an id of 0 """
+    form = Garden_SectionForm(request.POST or None)
+    
+    try:
+        user_garden = Garden.objects.get(user=request.user, pk=garden_id)
+    except Garden.DoesNotExist:
+        user_garden = None
+
+    try:
+        instance = Garden_Section.objects.get(pk=section_id)
+    except Garden.DoesNotExist:
+        instance = None
+
+
+    if request.method == "POST":
+        form = Garden_SectionForm(request.POST, request.FILES, instance=instance)
+
+        if form.is_valid():
+            # Set form data equal to url data to make sure its not changed
+            form.cleaned_data['garden'] = form.cleaned_data['garden']
+
+            # Check if forms garden id is in users gardens that they made
+            if(user_garden == None):
+                return redirect("home")
+
+            # save the info
+            form.save()
+            return redirect("garden_section_list", username, garden_id)
+    else: # GET request
+        form = Garden_SectionForm(instance=instance)
+        form.initial['garden'] = garden_id # Set to the url garden
+
+    site_title = None
+    if form.instance.pk == None:
+        site_title = "Create Garden Section"
+    else:
+        site_title = "Edit Garden Section"
+
+    my_context = {
+        "form": form,
+        "garden": user_garden, # Get first garden
         "site_title": site_title
     }
     return render(request, "users/garden_section/garden_section_create.html", my_context) # return an html template
