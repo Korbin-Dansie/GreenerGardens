@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 
 from gardens.models import Garden, Garden_Section
-from .forms import GardenForm, Garden_SectionForm
+from .forms import GardenForm, Garden_SectionForm, PlantForm
 
 from django.contrib.auth.decorators import login_required
 
@@ -127,6 +127,7 @@ def garden_list_view(request, username, *args, **kwargs):
     }
     return render(request, "users/garden/garden_list.html", my_context) # return an html template
 
+
 """
     Pages to manage Gardens Sections
 """
@@ -238,3 +239,76 @@ def garden_section_update_view(request, username, garden_id, section_id, *args, 
         "site_title": site_title
     }
     return render(request, "users/garden_section/garden_section_create.html", my_context) # return an html template
+
+
+"""
+Manage Plants
+"""
+@login_required
+def plant_create_view(request, username, *args, **kwargs):
+    """ Create or edit an existing garden. New entries have an id of 0 """
+    form = PlantForm(request.POST or None)
+
+    if request.method == "POST":
+        form = PlantForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.cleaned_data['user'] = request.user # Set to the current logged in user
+            # save the info
+            form.save()
+            return redirect("home")
+    else: # GET request
+        form = PlantForm()
+        form.initial['user'] = request.user.id # Set to the current logged in user
+
+    site_title = None
+    if form.instance.pk == None:
+        site_title = "Create Plant"
+    else:
+        site_title = "Edit Plant"
+
+    my_context = {
+        "form": form,
+        "site_title": site_title
+    }
+    return render(request, "users/plant/plant_create.html", my_context) # return an html template
+
+@login_required
+def plant_update_view(request, username, garden_id, *args, **kwargs):
+    """ Create or edit an existing garden item. New entries have an id of 0 """
+    form = PlantForm(request.POST or None)
+    try:
+        instance = Garden.objects.get(pk=garden_id)
+    except Garden.DoesNotExist:
+        instance = None
+
+    # Check if logged in user made the garden
+    current_user = request.user
+    if(instance.user.id != current_user.id):
+        return redirect("home")
+
+
+    if request.method == "POST":
+        form = PlantForm(request.POST, request.FILES, instance=instance)
+
+        if form.is_valid():
+            form.cleaned_data['user'] = request.user # Set to the current logged in user
+            # save the info
+            form.save()
+            return redirect("home")
+    else: # GET request
+        form = PlantForm(instance=instance)
+        form.initial['user'] = request.user.id # Set to the current logged in user
+
+    site_title = None
+    if garden_id == 0:
+        site_title = "Create Garden"
+    else:
+        site_title = "Edit Garden"
+
+    my_context = {
+        "form": form,
+        "garden": instance,
+        "site_title": site_title
+    }
+    return render(request, "users/garden/garden_upsert.html", my_context) # return an html template
