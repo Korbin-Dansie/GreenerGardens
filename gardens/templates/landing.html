@@ -8,7 +8,7 @@
   {% for garden in gardens %}
   <div class="col-md-3 p-2 d-flex align-items-stretch">
     <!-- Add Garden -->
-    <a href="{% url 'garden_create' request.user.username %}" class="w-100">
+    <a href="{% url 'garden_section_list' request.user.username garden.id %}" class="w-100">
         {% if garden.image.url != None %}
         <div class="bg-image bg-primary card shadow w-100 ratio ratio-16x9" style="background-image: url('{{garden.image.url}}'); background-repeat: no-repeat; background-position: center; background-size: contain;">
         {% else %}
@@ -16,7 +16,6 @@
         {% endif %}
         <div class="card-body text-white">
           <h3 class="card-title"><span class="bg-dark px-2 rounded" style="--bs-bg-opacity: .8;">{{garden.name}}</span></h3>
-
           <p class="card-text">
           </p>
         </div>

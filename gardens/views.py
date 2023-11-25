@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 
-from gardens.models import Garden
+from gardens.models import Garden, Garden_Section
 from .forms import GardenForm
 
 from django.contrib.auth.decorators import login_required
@@ -126,3 +126,26 @@ def garden_list_view(request, username, *args, **kwargs):
         "site_title": "My Gardens"
     }
     return render(request, "users/garden/garden_list.html", my_context) # return an html template
+
+"""
+    Pages to manage Gardens Sections
+"""
+@login_required
+def garden_section_list_view(request, username, garden_id, *args, **kwargs):
+    # Check if the url user is the same as the logged in user
+    try:
+        instance = Garden.objects.get(pk=garden_id)
+    except Garden.DoesNotExist:
+        instance = None
+
+    # Check if logged in user made the garden
+    current_user = request.user
+    if(current_user.id != instance.user.id):
+        return redirect("home")
+
+    my_context = {
+        "garden": instance,
+        "sections": instance.sections.all(),
+        "site_title": "My Gardens - " + instance.name,
+    }
+    return render(request, "users/garden_section/garden_section_list.html", my_context) # return an html template
