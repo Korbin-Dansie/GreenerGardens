@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 
-from gardens.models import Garden, Garden_Section
+from gardens.models import Garden, Garden_Section, Plant
 from .forms import GardenForm, Garden_SectionForm, PlantForm
 
 from django.contrib.auth.decorators import login_required
@@ -245,6 +245,20 @@ def garden_section_update_view(request, username, garden_id, section_id, *args, 
 Manage Plants
 """
 @login_required
+def plant_list_view(request, username, *args, **kwargs):
+    # Check if the url user is the same as the logged in user
+    current_user = request.user 
+    if(current_user.username != username):
+        return redirect("home") 
+
+    my_context = {
+        "plants": Plant.objects.filter(user=current_user),
+        "site_title": "My Gardens"
+    }
+    return render(request, "users/plant/plant_list.html", my_context) # return an html template
+
+
+@login_required
 def plant_create_view(request, username, *args, **kwargs):
     """ Create or edit an existing garden. New entries have an id of 0 """
     form = PlantForm(request.POST or None)
@@ -272,20 +286,21 @@ def plant_create_view(request, username, *args, **kwargs):
         "site_title": site_title
     }
     return render(request, "users/plant/plant_create.html", my_context) # return an html template
-
+     
 @login_required
-def plant_update_view(request, username, garden_id, *args, **kwargs):
+def plant_update_view(request, username, plant_id, *args, **kwargs):
     """ Create or edit an existing garden item. New entries have an id of 0 """
     form = PlantForm(request.POST or None)
     try:
-        instance = Garden.objects.get(pk=garden_id)
+        instance = Plant.objects.get(pk=plant_id)
     except Garden.DoesNotExist:
         instance = None
 
     # Check if logged in user made the garden
     current_user = request.user
-    if(instance.user.id != current_user.id):
-        return redirect("home")
+    if(instance != None):
+        if(instance.user.id != current_user.id):
+            return redirect("home")
 
 
     if request.method == "POST":
@@ -301,14 +316,30 @@ def plant_update_view(request, username, garden_id, *args, **kwargs):
         form.initial['user'] = request.user.id # Set to the current logged in user
 
     site_title = None
-    if garden_id == 0:
+    if plant_id == 0:
         site_title = "Create Garden"
     else:
         site_title = "Edit Garden"
 
     my_context = {
         "form": form,
-        "garden": instance,
+        "plant": instance,
         "site_title": site_title
     }
-    return render(request, "users/garden/garden_upsert.html", my_context) # return an html template
+    return render(request, "users/plant/plant_upsert.html", my_context) # return an html template
+
+@login_required
+def plant_delete_view(request, username, plant_id, *args, **kwargs):
+    # Check if the user has privilege to access the plant
+    instance = Plant.objects.filter(user=request.user, id=plant_id)[:1] # Limit to the first post
+    if(instance is None):
+        redirect("users:login")
+    
+    form = PlantForm(instance=instance[0])
+    # Update the entires
+    if request.method == "POST":
+        form = PlantForm(request.POST, instance=instance[0])
+        if form.is_valid():
+            instance[0].delete()
+            return redirect("plant_list", request.user.username)
+    return redirect("home")

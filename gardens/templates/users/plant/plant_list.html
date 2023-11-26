@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block header %}
+
+{% endblock %}
+
+
+{% block content %}
+{% load static %}
+<h1>Manage Plants</h1>
+
+<div class="card shadow">
+    <div class="card-body">
+      <p class="card-text">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Image</th>
+                <th scope="col">Category</th>
+                <th scope="col">Name</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Edit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for plant in plants %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>
+                  {% if plant.image %}
+                    <img src="{{ plant.image.url }}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
+                  {% else %}
+                    <img src="{% static 'images/sprout.png' %}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
+                  {% endif %}
+                </td>
+                <td>
+                  {% if plant.category is not None %}
+                    {{ plant.category.name }}
+                  {% endif %}
+                </td>
+                <td>{{ plant.name }}</td>
+                <td>
+
+                  {{ plant.rating }}
+
+                </td>
+                <td>
+                    <a href="{% url 'plant_update' request.user.username plant.id %}" class="btn btn-warning shadow-sm">Edit</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+      </p>
+    </div>
+  </div>
+  
+
+
+
+{% endblock %}
