@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.conf import settings
 
@@ -37,3 +38,13 @@ class Plant(models.Model):
 
     def __str__(self) -> str:
         return self.user.username + " - " + self.name
+    
+
+class Plant_Log(models.Model):
+    garden_section = models.ForeignKey(Garden_Section, on_delete=models.CASCADE)
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    date = models.DateField(default=datetime.date.today)
+    count = models.BigIntegerField(default=0)
+
+    def __str__(self) -> str:
+        return self.garden_section.garden.name + " - " + self.garden_section.name + " - " + self.plant.name

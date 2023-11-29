@@ -23,6 +23,7 @@ from django.urls import include, path
 from gardens.views import home_view, landing_page_view, garden_create_view, garden_update_view, garden_delete_view, garden_list_view
 from gardens.views import garden_section_list_view, garden_section_create_view, garden_section_update_view, garden_section_delete_view
 from gardens.views import plant_create_view, plant_update_view, plant_list_view, plant_delete_view
+from gardens.views import plant_log_create_view, plant_log_update_view, plant_log_delete_view
 
 urlpatterns = [
     path('', home_view, name='home'), # Change the index page
@@ -34,17 +35,23 @@ urlpatterns = [
     path('users/<str:username>/gardens/<int:garden_id>/', garden_update_view, name='garden_update'), # Edit on on the users gardens
     path('users/<str:username>/gardens/<int:garden_id>/delete/', garden_delete_view, name='garden_delete'), # Edit one of the user posts
 
-    # Mange garden sections
+    # Manage garden sections
     path('users/<str:username>/gardens/<int:garden_id>/section/', garden_section_list_view, name='garden_section_list'), # Display a list of gardens sections to edit
     path('users/<str:username>/gardens/<int:garden_id>/section/create/', garden_section_create_view, name='garden_section_create'), # Create a new garden
     path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/', garden_section_update_view, name='garden_section_update'), # Edit on on the users gardens
     path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/delete/', garden_section_delete_view, name='garden_section_delete'), # Edit one of the user posts
 
-    # Mange plants
+    # Manage plants
     path('users/<str:username>/plants/', plant_list_view, name='plant_list'), # Display a list of gardens to edit
     path('users/<str:username>/plants/create/', plant_create_view, name='plant_create'), # Create a new garden
     path('users/<str:username>/plants/<int:plant_id>/', plant_update_view, name='plant_update'), # Edit on on the users gardens
     path('users/<str:username>/plants/<int:plant_id>/delete/', plant_delete_view, name='plant_delete'), # Edit one of the user posts
+
+    # Manage plants history / logs
+    path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/logs/create/', plant_log_create_view, name='plant_log_create'), # Edit on on the users gardens
+    path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/logs/<int:log_id>/', plant_log_update_view, name='plant_log_update'), # Edit one of the user posts
+    path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/logs/<int:log_id>/delete/', plant_log_delete_view, name='plant_log_delete'), # Edit one of the user posts
+
 
 
     # Mange login and register

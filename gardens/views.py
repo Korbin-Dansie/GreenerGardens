@@ -368,3 +368,18 @@ def plant_delete_view(request, username, plant_id, *args, **kwargs):
             instance[0].delete()
             return redirect("plant_list", request.user.username)
     return redirect("home")
+
+"""
+Manage Plant History / Logs
+"""
+@login_required
+def plant_log_create_view(request, username, garden_id, section_id, *args, **kwargs):
+    return ""
+
+@login_required
+def plant_log_update_view(request, username, garden_id, section_id, *args, **kwargs):
+    return ""
+
+@login_required
+def plant_log_delete_view(request, username, garden_id, section_id, *args, **kwargs):
+    return ""
