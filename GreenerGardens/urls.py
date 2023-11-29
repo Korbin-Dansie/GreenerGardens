@@ -21,7 +21,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from gardens.views import home_view, landing_page_view, garden_create_view, garden_update_view, garden_delete_view, garden_list_view
-from gardens.views import garden_section_list_view, garden_section_create_view, garden_section_update_view
+from gardens.views import garden_section_list_view, garden_section_create_view, garden_section_update_view, garden_section_delete_view
 from gardens.views import plant_create_view, plant_update_view, plant_list_view, plant_delete_view
 
 urlpatterns = [
@@ -38,7 +38,7 @@ urlpatterns = [
     path('users/<str:username>/gardens/<int:garden_id>/section/', garden_section_list_view, name='garden_section_list'), # Display a list of gardens sections to edit
     path('users/<str:username>/gardens/<int:garden_id>/section/create/', garden_section_create_view, name='garden_section_create'), # Create a new garden
     path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/', garden_section_update_view, name='garden_section_update'), # Edit on on the users gardens
-    path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/delete/', garden_delete_view, name='garden_section_delete'), # Edit one of the user posts
+    path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/delete/', garden_section_delete_view, name='garden_section_delete'), # Edit one of the user posts
 
     # Mange plants
     path('users/<str:username>/plants/', plant_list_view, name='plant_list'), # Display a list of gardens to edit

@@ -236,10 +236,35 @@ def garden_section_update_view(request, username, garden_id, section_id, *args, 
     my_context = {
         "form": form,
         "garden": user_garden, # Get first garden
+        "garden_section": instance,
         "site_title": site_title
     }
     return render(request, "users/garden_section/garden_section_create.html", my_context) # return an html template
 
+@login_required
+def garden_section_delete_view(request, username, garden_id, section_id, *args, **kwargs):
+    # Check if the user has privilege to access the post
+    try:
+        user_garden = Garden.objects.get(user=request.user, pk=garden_id)
+    except Garden.DoesNotExist:
+        user_garden = None
+
+    try:
+        instance = Garden_Section.objects.filter(pk=section_id, garden=user_garden)
+    except Garden_Section.DoesNotExist:
+        instance = None
+
+    if(instance is None):
+        redirect("users:login")
+    
+    form = Garden_SectionForm(instance=instance[0])
+    # Update the entires
+    if request.method == "POST":
+        form = Garden_SectionForm(request.POST, instance=instance[0])
+        if form.is_valid():
+            instance[0].delete()
+            return redirect("garden_section_list", garden_id)
+    return redirect("home")
 
 """
 Manage Plants
