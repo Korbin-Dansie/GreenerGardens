@@ -143,10 +143,13 @@ def garden_section_list_view(request, username, garden_id, *args, **kwargs):
     current_user = request.user
     if(current_user.id != instance.user.id):
         return redirect("home")
+    
+    # Get the all the gardens sections
+    sections = instance.sections.all()
 
     my_context = {
         "garden": instance,
-        "sections": instance.sections.all(),
+        "sections": sections,
         "site_title": "My Gardens - " + instance.name,
     }
     return render(request, "users/garden_section/garden_section_list.html", my_context) # return an html template

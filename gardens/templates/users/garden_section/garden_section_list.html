@@ -67,21 +67,37 @@
       <thead>
         <tr>
           <th scope="col">#</th>
+          <th scope="col">Image</th>
           <th scope="col">Name</th>
+          <th scope="col">Count</th>
           <th scope="col">Edit</th>
         </tr>
       </thead>
       <tbody>
+        {% for log in section.logs.all %}
         <tr>
           <th scope="row">
             {{ forloop.counter }}
           </th>
           <td>
-            {{ section.name }}
+            {% if log.plant.image %}
+              <img src="{{ log.plant.image.url }}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
+            {% else %}
+              <img src="{% static 'images/sprout.png' %}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
+            {% endif %}
           </td>
           <td>
+            {{ log.plant.name }}
+          </td>
+          <td>
+            {{ log.count }}
+          </td>
+          <td>
+            <!-- Add edit button here -->
           </td>
         </tr>
+        {% endfor %}
+
       </tbody>
     </table>
     </p>

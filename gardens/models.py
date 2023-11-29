@@ -41,8 +41,8 @@ class Plant(models.Model):
     
 
 class Plant_Log(models.Model):
-    garden_section = models.ForeignKey(Garden_Section, on_delete=models.CASCADE)
-    plant = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    garden_section = models.ForeignKey(Garden_Section, on_delete=models.CASCADE, related_name="logs")
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="logs")
     date = models.DateField(default=datetime.date.today)
     count = models.BigIntegerField(default=0)
 
