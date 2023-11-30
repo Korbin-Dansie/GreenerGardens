@@ -21,19 +21,45 @@
       </div>
       <!-- Start of Submit buttons -->
       <div class="col-6 col-md-4">
-        <h2>
-          Name: {{ plant.name }}
-        </h2>
-        {% if plant.category.name is not None %}
-        <h5>
-          Category: {{ plant.category.name }}
-        </h5>
-        {% else %}
-        <h5>Category: ---</h5>
-        {% endif %}
-        <h5>
-            Rating: {{ plant.rating }}
-        </h5>
+        <table>
+          <tr class="p-1">
+            <td class="px-1">
+              <h2>
+                Name:
+              </h2>
+            </td>
+            <td class="px-1">
+                <h2>
+                {{ plant.name }}
+              </h2>
+            </td>
+          </tr>
+          <tr class="p-1">
+            <td class="px-1">
+                <h5>Category:</h5>
+            </td>
+            <td class="px-1">
+                {% if plant.category.name is not None %}
+              <h5>
+                {{ plant.category.name }}
+              </h5>
+              {% else %}
+              <h5>---</h5>
+              {% endif %}
+              <h5>
+            </td>
+          </tr>
+          <tr class="p-1">
+            <td class="px-1">
+                <h5>Rating:</h5>
+            </td>
+            <td class="px-1">
+                <h5>
+                {{ plant.rating }}
+              </h5>
+            </td>
+          </tr>
+        </table>
       </div>
       <!-- End of Submit buttons -->
       <div class=" col-12 col-md-4">
@@ -59,24 +85,24 @@
       </thead>
       <tbody>
         {% for log in logs %}
-            <tr>
-                <td>
-                    {{ log.garden_section.garden.name }}
-                </td>
-                <td>
-                    {{ log.garden_section.name }}
-                </td>
-                <td>
-                    {{ log.date }}
-                </td>
-                <td>
-                    {{ log.count }}
-                </td>
-                <td>
-                    <!-- Edit button here -->
-                </td>
+        <tr>
+          <td>
+            {{ log.garden_section.garden.name }}
+          </td>
+          <td>
+            {{ log.garden_section.name }}
+          </td>
+          <td>
+            {{ log.date }}
+          </td>
+          <td>
+            {{ log.count }}
+          </td>
+          <td>
+            <!-- Edit button here -->
+          </td>
 
-            </tr>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
