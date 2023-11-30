@@ -386,7 +386,8 @@ def plant_info_view(request, username, plant_id, *args, **kwargs):
         
     my_context = {
         "plant": instance,
-        "logs": instance.logs.all().order_by('-date'),
+        # Order by date, garden, garden section
+        "logs": instance.logs.all().order_by('-date', 'garden_section__garden', 'garden_section'),
         "site_title": instance.name + " Info"
     }
 
