@@ -94,6 +94,7 @@
           </td>
           <td>
             <!-- Add edit button here -->
+            <a href="{% url 'plant_info' request.user.username log.plant.id %}" class="btn btn-info shadow-sm">Info</a>
           </td>
         </tr>
         {% endfor %}

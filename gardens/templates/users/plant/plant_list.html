@@ -21,6 +21,7 @@
                 <th scope="col">Name</th>
                 <th scope="col">Rating</th>
                 <th scope="col">Edit</th>
+                <th scope="col">Info</th>
               </tr>
             </thead>
             <tbody>
@@ -47,6 +48,9 @@
                 </td>
                 <td>
                     <a href="{% url 'plant_update' request.user.username plant.id %}" class="btn btn-warning shadow-sm">Edit</a>
+                </td>
+                <td>
+                  <a href="{% url 'plant_info' request.user.username plant.id %}" class="btn btn-info shadow-sm">Info</a>
                 </td>
               </tr>
               {% endfor %}

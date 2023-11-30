@@ -22,7 +22,7 @@ from django.urls import include, path
 
 from gardens.views import home_view, landing_page_view, garden_create_view, garden_update_view, garden_delete_view, garden_list_view
 from gardens.views import garden_section_list_view, garden_section_create_view, garden_section_update_view, garden_section_delete_view
-from gardens.views import plant_create_view, plant_update_view, plant_list_view, plant_delete_view
+from gardens.views import plant_create_view, plant_update_view, plant_list_view, plant_delete_view, plant_info_view
 from gardens.views import plant_log_create_view, plant_log_update_view, plant_log_delete_view
 
 urlpatterns = [
@@ -46,6 +46,7 @@ urlpatterns = [
     path('users/<str:username>/plants/create/', plant_create_view, name='plant_create'), # Create a new garden
     path('users/<str:username>/plants/<int:plant_id>/', plant_update_view, name='plant_update'), # Edit on on the users gardens
     path('users/<str:username>/plants/<int:plant_id>/delete/', plant_delete_view, name='plant_delete'), # Edit one of the user posts
+    path('users/<str:username>/plants/<int:plant_id>/info/', plant_info_view, name='plant_info'), # Display plant infomation
 
     # Manage plants history / logs
     path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/logs/create/', plant_log_create_view, name='plant_log_create'), # Edit on on the users gardens

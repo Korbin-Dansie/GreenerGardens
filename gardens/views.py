@@ -320,7 +320,7 @@ def plant_update_view(request, username, plant_id, *args, **kwargs):
     form = PlantForm(request.POST or None)
     try:
         instance = Plant.objects.get(pk=plant_id)
-    except Garden.DoesNotExist:
+    except Plant.DoesNotExist:
         instance = None
 
     # Check if logged in user made the garden
@@ -370,6 +370,27 @@ def plant_delete_view(request, username, plant_id, *args, **kwargs):
             instance[0].delete()
             return redirect("plant_list", request.user.username)
     return redirect("home")
+
+@login_required
+def plant_info_view(request, username, plant_id, *args, **kwargs):
+    try:
+        instance = Plant.objects.get(pk=plant_id)
+    except Plant.DoesNotExist:
+        instance = None
+
+    # Check if logged in user made the garden
+    current_user = request.user
+    if(instance != None):
+        if(instance.user.id != current_user.id):
+            return redirect("home")
+        
+    my_context = {
+        "plant": instance,
+        "site_title": instance.name + " Info"
+    }
+
+    return render(request, "users/plant/plant_info.html", my_context) # return an html template
+
 
 """
 Manage Plant History / Logs
