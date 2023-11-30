@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 
 from gardens.models import Garden, Garden_Section, Plant
-from .forms import GardenForm, Garden_SectionForm, PlantForm
+from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_LogForm
 
 from django.contrib.auth.decorators import login_required
 
@@ -285,10 +285,9 @@ def plant_list_view(request, username, *args, **kwargs):
     }
     return render(request, "users/plant/plant_list.html", my_context) # return an html template
 
-
 @login_required
 def plant_create_view(request, username, *args, **kwargs):
-    """ Create or edit an existing garden. New entries have an id of 0 """
+    """ Create or edit an existing plant. New entries have an id of 0 """
     form = PlantForm(request.POST or None)
 
     if request.method == "POST":
@@ -377,7 +376,50 @@ Manage Plant History / Logs
 """
 @login_required
 def plant_log_create_view(request, username, garden_id, section_id, *args, **kwargs):
-    return ""
+    """ Create or edit an existing plant log. New entries have an id of 0 """
+    form = Plant_LogForm(request.POST or None)
+
+    # Check if the url user is the same as the logged in user
+    try:
+        garden_instance = Garden.objects.get(pk=garden_id)
+    except Garden.DoesNotExist:
+        garden_instance = None
+    try:
+        section_instance = Garden_Section.objects.get(pk=section_id, garden=garden_instance)
+    except Garden_Section.DoesNotExist:
+        section_instance = None
+
+    # Check if logged in user made the garden section
+    if(request.user.id != section_instance.garden.user.id):
+        return redirect("home")
+
+    if request.method == "POST":
+        form = Plant_LogForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.initial['garden_section'] = section_id # Set to url paramater
+            # save the info
+            form.save()
+            return redirect('garden_section_list', request.user.username, garden_id)
+    else: # GET request
+        form = Plant_LogForm()
+        form.initial['garden_section'] = section_id # Set to url paramater
+
+    # Get a list of user created plants
+    user_plant_list = Plant.objects.filter(user=request.user.id)
+    form.fields['plant'].queryset = user_plant_list
+
+    site_title = None
+    if form.instance.pk == None:
+        site_title = "Create Plant Log"
+    else:
+        site_title = "Edit Plant Log"
+
+    my_context = {
+        "form": form,
+        "garden_id": garden_id,
+        "site_title": site_title
+    }
+    return render(request, "users/plant_log/plant_log_create.html", my_context) # return an html template
 
 @login_required
 def plant_log_update_view(request, username, garden_id, section_id, *args, **kwargs):
