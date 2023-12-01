@@ -25,7 +25,7 @@ class Plant_Category(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) # Store the users info
 
     def __str__(self) -> str:
-        return self.user.username + " - " + self.name
+        return self.name
     
 class Plant(models.Model):
     variety = models.CharField(max_length=64)
@@ -37,7 +37,7 @@ class Plant(models.Model):
 
 
     def __str__(self) -> str:
-        return self.user.username + " - " + self.variety
+        return self.variety
     
 
 class Plant_Log(models.Model):

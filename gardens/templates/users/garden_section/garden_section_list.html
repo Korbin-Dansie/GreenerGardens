@@ -10,10 +10,17 @@
 <div class="card shadow mb-2">
   <div class="card-body">
     <div class="row">
-      <div class="col-6">
+      <div class="col-4">
         <h1 class="text-secondary">{{garden.name}}</h1>
       </div>
-      <div class="col-6">
+      <div class="col-4">
+        <!-- Display Year form -->
+        <form method="get" id="select_year_form">
+          
+        </form>
+        <!-- Display Year form -->
+      </div>
+      <div class="col-4">
         <!-- Start of Submit buttons -->
         <div class="h-100 d-flex align-items-center">
           <div class="ms-auto">
@@ -74,7 +81,11 @@
         </tr>
       </thead>
       <tbody>
-        {% for log in section.logs.all %}
+        <!-- Logs are stroed in 2d array [[queryset],[queryset]] -->
+        {% for log_list in logs %}
+        {% if forloop.counter == forloop.parentloop.counter %}
+        <!-- Loop through one of the querysets -->
+        {% for log in log_list %}
         <tr>
           <th scope="row">
             {{ forloop.counter }}
@@ -97,8 +108,10 @@
             <a href="{% url 'plant_info' request.user.username log.plant.id %}" class="btn btn-info shadow-sm">Info</a>
           </td>
         </tr>
-        {% endfor %}
 
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
       </tbody>
     </table>
     </p>
