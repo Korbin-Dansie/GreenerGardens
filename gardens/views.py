@@ -508,5 +508,19 @@ def plant_log_update_view(request, username, garden_id, section_id, log_id, *arg
     return render(request, "users/plant_log/plant_log_upsert.html", my_context) # return an html template
 
 @login_required
-def plant_log_delete_view(request, username, garden_id, section_id, *args, **kwargs):
-    return ""
+def plant_log_delete_view(request, username, garden_id, section_id, log_id, *args, **kwargs):
+    # Check if the user has privilege to access the plant
+    instance = Plant_Log.objects.filter(garden_section=section_id, id=log_id)[:1] # Limit to the first post
+    garden_instance = instance[0].garden_section.garden
+    plant_id = instance[0].plant.id
+    if(garden_instance.user.id != request.user.id):
+        redirect("users:login")
+    
+    form = Plant_LogForm(instance=instance[0])
+    # Update the entires
+    if request.method == "POST":
+        form = Plant_LogForm(request.POST, instance=instance[0])
+        if form.is_valid():
+            instance[0].delete()
+            return redirect('plant_info', request.user.username, plant_id)
+    return redirect("home")
