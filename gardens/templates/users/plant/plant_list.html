@@ -10,56 +10,72 @@
 <h1>Manage Plants</h1>
 
 <div class="card shadow">
-    <div class="card-body">
-      <p class="card-text">
-        <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Image</th>
-                <th scope="col">Category</th>
-                <th scope="col">Name</th>
-                <th scope="col">Rating</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Info</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for plant in plants %}
-              <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>
-                  {% if plant.image %}
-                    <img src="{{ plant.image.url }}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
-                  {% else %}
-                    <img src="{% static 'images/sprout.png' %}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
-                  {% endif %}
-                </td>
-                <td>
-                  {% if plant.category is not None %}
-                    {{ plant.category.name }}
-                  {% endif %}
-                </td>
-                <td>{{ plant.name }}</td>
-                <td>
-
-                  {{ plant.rating }}
-
-                </td>
-                <td>
-                    <a href="{% url 'plant_update' request.user.username plant.id %}" class="btn btn-warning shadow-sm">Edit</a>
-                </td>
-                <td>
-                  <a href="{% url 'plant_info' request.user.username plant.id %}" class="btn btn-info shadow-sm">Info</a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-      </p>
+  <div class="card-body">
+    <p class="card-text">
+      <!-- Start of Add Button -->
+    <div class="d-flex">
+      <div class="ms-auto">
+        <a href="{% url 'plant_create' request.user.username %}" class="btn btn-primary shadow-sm ms-auto">
+          Create Plant
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+          </svg>
+        </a>
+      </div>
     </div>
+    <!-- End of Add Button -->
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Image</th>
+          <th scope="col">Category</th>
+          <th scope="col">Name</th>
+          <th scope="col">Rating</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Info</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for plant in plants %}
+        <tr>
+          <th scope="row">
+            {{ forloop.counter }}
+          </th>
+          <td>
+            {% if plant.image %}
+            <img src="{{ plant.image.url }}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
+            {% else %}
+            <img src="{% static 'images/sprout.png' %}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
+            {% endif %}
+          </td>
+          <td>
+            {% if plant.category is not None %}
+            {{ plant.category.name }}
+            {% endif %}
+          </td>
+          <td>
+            {{ plant.name }}
+          </td>
+          <td>
+            {{ plant.rating }}
+
+          </td>
+          <td>
+            <a href="{% url 'plant_update' request.user.username plant.id %}" class="btn btn-warning shadow-sm">Edit</a>
+          </td>
+          <td>
+            <a href="{% url 'plant_info' request.user.username plant.id %}" class="btn btn-info shadow-sm">Info</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </p>
   </div>
-  
+</div>
+
 
 
 
