@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 
-from gardens.models import Garden, Garden_Section, Plant
+from gardens.models import Garden, Garden_Section, Plant, Plant_Log
 from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_LogForm
 
 from django.contrib.auth.decorators import login_required
@@ -404,11 +404,7 @@ def plant_log_create_view(request, username, garden_id, section_id, *args, **kwa
 
     # Check if the url user is the same as the logged in user
     try:
-        garden_instance = Garden.objects.get(pk=garden_id)
-    except Garden.DoesNotExist:
-        garden_instance = None
-    try:
-        section_instance = Garden_Section.objects.get(pk=section_id, garden=garden_instance)
+        section_instance = Garden_Section.objects.get(pk=section_id, garden=garden_id)
     except Garden_Section.DoesNotExist:
         section_instance = None
 
@@ -421,13 +417,13 @@ def plant_log_create_view(request, username, garden_id, section_id, *args, **kwa
     if request.method == "POST":
         form = Plant_LogForm(request.POST, request.FILES)
         if form.is_valid():
-            form.initial['garden_section'] = section_id # Set to url paramater
+            form.initial['garden_section'] = section_instance # Set to url paramater
 
             # Check to make sure the user owns the plant
             try:
                 plant_instance = Plant.objects.get(id=form.cleaned_data['plant'].id, user=request.user.id)
             except Plant.DoesNotExist:
-                section_instance = None
+                plant_instance = None
 
             if(plant_instance is None):
                 return redirect("home")
@@ -452,13 +448,64 @@ def plant_log_create_view(request, username, garden_id, section_id, *args, **kwa
     my_context = {
         "form": form,
         "garden_id": garden_id,
+        "section_id": section_id,
         "site_title": site_title
     }
     return render(request, "users/plant_log/plant_log_create.html", my_context) # return an html template
 
 @login_required
-def plant_log_update_view(request, username, garden_id, section_id, *args, **kwargs):
-    return ""
+def plant_log_update_view(request, username, garden_id, section_id, log_id, *args, **kwargs):
+    """ Create or edit an existing plant log. New entries have an id of 0 """
+    form = Plant_LogForm(request.POST or None)
+
+    # Check if the url user is the same as the logged in user
+    try:
+        log_instance = Plant_Log.objects.get(pk=log_id, garden_section=section_id)
+    except Plant_Log.DoesNotExist:
+        log_instance = None
+
+    # Check if logged in user made the garden section
+    if(request.user.id != log_instance.garden_section.garden.user.id):
+        return redirect("home")
+
+    if request.method == "POST":
+        form = Plant_LogForm(request.POST, request.FILES, instance=log_instance)
+        if form.is_valid():
+            form.initial['garden_section'] = log_instance.garden_section # Set to url paramater
+
+            # Check to make sure the user owns the plant
+            try:
+                plant_instance = Plant.objects.get(id=form.cleaned_data['plant'].id, user=request.user.id)
+            except Plant.DoesNotExist:
+                plant_instance = None
+
+            if(plant_instance is None):
+                return redirect("home")
+            
+            # save the info
+            form.save()
+            return redirect('garden_section_list', request.user.username, garden_id)
+    else: # GET request
+        form = Plant_LogForm(instance=log_instance)
+
+    # Get a list of user created plants
+    user_plant_list = Plant.objects.filter(user=request.user.id)
+    form.fields['plant'].queryset = user_plant_list
+
+    site_title = None
+    if form.instance.pk == None:
+        site_title = "Create Plant Log"
+    else:
+        site_title = "Edit Plant Log"
+
+    my_context = {
+        "form": form,
+        "plant_log": log_instance,
+        "garden_id": garden_id,
+        "section_id": section_id,
+        "site_title": site_title
+    }
+    return render(request, "users/plant_log/plant_log_upsert.html", my_context) # return an html template
 
 @login_required
 def plant_log_delete_view(request, username, garden_id, section_id, *args, **kwargs):

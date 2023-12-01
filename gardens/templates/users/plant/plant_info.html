@@ -100,6 +100,8 @@
           </td>
           <td>
             <!-- Edit button here -->
+            <a href="{% url 'plant_log_update' request.user.username log.garden_section.garden.id log.garden_section.id log.id %}" class="btn btn-warning shadow-sm">Edit</a>
+
           </td>
 
         </tr>

@@ -33,9 +33,9 @@
         <div class="ms-auto">
           <a href="{% url 'garden_section_list' request.user.username garden_id %}" class="btn btn-secondary shadow-sm">Cancel</a>
           {% if plant_log.id != None %}
-          <input href="{% url 'plant_update' plant.user.username plant.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
+          <input href="{% url 'plant_log_update' request.user.username garden_id section_id plant_log.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% else %}
-          <input href="{% url 'plant_create' request.user.username %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
+          <input href="{% url 'plant_log_create' request.user.username garden_id section_id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% endif %}
         </div>
       </div>
@@ -56,7 +56,7 @@
       </div>
       <div class="modal-body">
         <p>Are you sure you want to <b class="text-danger">delete</b> this log?</p>
-        <p><b>&ltName Here&gt</b>?</p>
+        <!-- <p><b>&ltName Here&gt</b>?</p> -->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
