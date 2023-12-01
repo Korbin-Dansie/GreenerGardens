@@ -30,7 +30,7 @@
             </td>
             <td class="px-1">
                 <h2>
-                {{ plant.name }}
+                {{ plant.variety }}
               </h2>
             </td>
           </tr>
@@ -73,6 +73,8 @@
 <div class="card shadow mb-2">
   <div class="card-body">
     <h2 class="card-title">History</h2>
+    {% for year in years %}
+    <h2 class="text-info">{{ year }}</h2>
     <table class="table">
       <thead>
         <tr>
@@ -85,6 +87,7 @@
       </thead>
       <tbody>
         {% for log in logs %}
+        {% if log.date.year == year %}
         <tr>
           <td>
             {{ log.garden_section.garden.name }}
@@ -101,13 +104,13 @@
           <td>
             <!-- Edit button here -->
             <a href="{% url 'plant_log_update' request.user.username log.garden_section.garden.id log.garden_section.id log.id %}" class="btn btn-warning shadow-sm">Edit</a>
-
           </td>
-
         </tr>
+        {% endif %}
         {% endfor %}
       </tbody>
     </table>
+    {% endfor %}
   </div>
 </div>
 </div>

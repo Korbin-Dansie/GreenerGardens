@@ -378,17 +378,25 @@ def plant_info_view(request, username, plant_id, *args, **kwargs):
     except Plant.DoesNotExist:
         instance = None
 
+    logs = instance.logs.all().order_by('-date', 'garden_section__garden', 'garden_section')
     # Check if logged in user made the garden
     current_user = request.user
     if(instance != None):
         if(instance.user.id != current_user.id):
             return redirect("home")
-        
+    
+    # Add each year to display indvidualy
+    year_list = []
+    for log in logs:
+        if( not log.date.year in year_list):
+            year_list.append(log.date.year)
+
     my_context = {
         "plant": instance,
         # Order by date, garden, garden section
-        "logs": instance.logs.all().order_by('-date', 'garden_section__garden', 'garden_section'),
-        "site_title": instance.name + " Info"
+        "logs": logs,
+        "years": year_list,
+        "site_title": instance.variety + " Info"
     }
 
     return render(request, "users/plant/plant_info.html", my_context) # return an html template

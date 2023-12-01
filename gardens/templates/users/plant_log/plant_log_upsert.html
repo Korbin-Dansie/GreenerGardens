@@ -15,6 +15,21 @@
 
 <div class="card">
   <div class="card-body">
+
+    <!-- Start of Add Button -->
+    <div class="d-flex">
+      <div class="ms-auto">
+        <a href="{% url 'plant_create' request.user.username %}" class="btn btn-primary shadow-sm ms-auto">
+          Create New Plant
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+    <!-- End of Add Button -->
+
+
     <form method="post" id="user_post_edit_form" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}

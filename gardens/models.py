@@ -28,7 +28,7 @@ class Plant_Category(models.Model):
         return self.user.username + " - " + self.name
     
 class Plant(models.Model):
-    name = models.CharField(max_length=64)
+    variety = models.CharField(max_length=64)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) # Store the users info
     image = models.ImageField(upload_to="plants/", blank=True, null=True) #Allow no image
     category = models.ForeignKey(Plant_Category, on_delete=models.CASCADE, null=True, blank=True)
@@ -37,7 +37,7 @@ class Plant(models.Model):
 
 
     def __str__(self) -> str:
-        return self.user.username + " - " + self.name
+        return self.user.username + " - " + self.variety
     
 
 class Plant_Log(models.Model):
@@ -47,4 +47,4 @@ class Plant_Log(models.Model):
     count = models.BigIntegerField(default=0)
 
     def __str__(self) -> str:
-        return self.garden_section.garden.name + " - " + self.garden_section.name + " - " + self.plant.name
+        return self.garden_section.garden.name + " - " + self.garden_section.name + " - " + self.plant.variety

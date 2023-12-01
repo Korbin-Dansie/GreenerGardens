@@ -27,7 +27,7 @@ class PlantForm(forms.ModelForm):
         model = Plant
         fields = "__all__"
         widgets =   { 
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'variety': forms.TextInput(attrs={'class': 'form-control'}),
             # 'image': forms.FileInput(attrs={'class':"form-control", "type":"file"}),
             'category': forms.TextInput(attrs={'class': 'form-select'}),
             'rating': forms.NumberInput(attrs={'class': 'form-control', 'min':0, 'max':5}),
