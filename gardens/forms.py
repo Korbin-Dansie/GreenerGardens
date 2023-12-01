@@ -45,3 +45,6 @@ class Plant_LogForm(forms.ModelForm):
             # 'date': forms.DateInput(attrs={'class': 'form-select'})
             'count': forms.NumberInput(attrs={'class': 'form-control', 'min':0, 'max':9223372036854775807}),
         }
+
+class Garden_Section_Date_Form(forms.Form):
+    date = forms.DateField()

@@ -16,7 +16,8 @@
       <div class="col-4">
         <!-- Display Year form -->
         <form method="get" id="select_year_form">
-          
+          <!-- {% csrf_token %} -->
+          {{ form.as_p }}
         </form>
         <!-- Display Year form -->
       </div>
@@ -82,10 +83,8 @@
       </thead>
       <tbody>
         <!-- Logs are stroed in 2d array [[queryset],[queryset]] -->
-        {% for log_list in logs %}
-        {% if forloop.counter == forloop.parentloop.counter %}
-        <!-- Loop through one of the querysets -->
-        {% for log in log_list %}
+        {% for log in logs %}
+        {% if log.garden_section.id == section.id %}
         <tr>
           <th scope="row">
             {{ forloop.counter }}
@@ -108,8 +107,6 @@
             <a href="{% url 'plant_info' request.user.username log.plant.id %}" class="btn btn-info shadow-sm">Info</a>
           </td>
         </tr>
-
-        {% endfor %}
         {% endif %}
         {% endfor %}
       </tbody>

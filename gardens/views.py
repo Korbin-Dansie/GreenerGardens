@@ -1,7 +1,8 @@
+import datetime
 from django.shortcuts import redirect, render
 
 from gardens.models import Garden, Garden_Section, Plant, Plant_Log
-from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_LogForm
+from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_LogForm, Garden_Section_Date_Form
 
 from django.contrib.auth.decorators import login_required
 
@@ -144,11 +145,21 @@ def garden_section_list_view(request, username, garden_id, *args, **kwargs):
     if(current_user.id != instance.user.id):
         return redirect("home")
     
+    # Set up form to filter by date
+    form = Garden_Section_Date_Form()
+    date = request.GET.get('date', datetime.date.today())
+    if not type(date) is datetime.date:
+        date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+    form.initial['date'] = date
+
     # Get the all the gardens sections
     sections = instance.sections.all()
-    logs = [section.logs.all() for section in sections]
+    # logs = [section.logs.all() for section in sections]
+    logs = Plant_Log.objects.filter(date__year=date.year, garden_section__in=sections)
+
     my_context = {
         "garden": instance,
+        "form": form,
         "sections": sections,
         "logs": logs,
         "site_title": "My Gardens - " + instance.name,
