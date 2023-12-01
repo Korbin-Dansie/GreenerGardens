@@ -412,7 +412,9 @@ def plant_log_create_view(request, username, garden_id, section_id, *args, **kwa
     except Garden_Section.DoesNotExist:
         section_instance = None
 
-    # Check if logged in user made the garden section
+
+
+    # Check if logged in user made the garden section and owns the plant
     if(request.user.id != section_instance.garden.user.id):
         return redirect("home")
 
@@ -420,6 +422,16 @@ def plant_log_create_view(request, username, garden_id, section_id, *args, **kwa
         form = Plant_LogForm(request.POST, request.FILES)
         if form.is_valid():
             form.initial['garden_section'] = section_id # Set to url paramater
+
+            # Check to make sure the user owns the plant
+            try:
+                plant_instance = Plant.objects.get(id=form.cleaned_data['plant'].id, user=request.user.id)
+            except Plant.DoesNotExist:
+                section_instance = None
+
+            if(plant_instance is None):
+                return redirect("home")
+            
             # save the info
             form.save()
             return redirect('garden_section_list', request.user.username, garden_id)
