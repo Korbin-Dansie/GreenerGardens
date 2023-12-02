@@ -315,6 +315,10 @@ def plant_create_view(request, username, *args, **kwargs):
         form = PlantForm()
         form.initial['user'] = request.user.id # Set to the current logged in user
 
+    # Get a list of user created categories
+    user_plant_category_list = Plant_Category.objects.filter(user=request.user.id)
+    form.fields['category'].queryset = user_plant_category_list
+
     site_title = None
     if form.instance.pk == None:
         site_title = "Create Plant"
@@ -354,6 +358,10 @@ def plant_update_view(request, username, plant_id, *args, **kwargs):
     else: # GET request
         form = PlantForm(instance=instance)
         form.initial['user'] = request.user.id # Set to the current logged in user
+
+    # Get a list of user created categories
+    user_plant_category_list = Plant_Category.objects.filter(user=request.user.id)
+    form.fields['category'].queryset = user_plant_category_list
 
     site_title = None
     if plant_id == 0:

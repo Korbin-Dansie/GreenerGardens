@@ -29,7 +29,7 @@ class PlantForm(forms.ModelForm):
         widgets =   { 
             'variety': forms.TextInput(attrs={'class': 'form-control'}),
             # 'image': forms.FileInput(attrs={'class':"form-control", "type":"file"}),
-            'category': forms.TextInput(attrs={'class': 'form-select'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
             'rating': forms.NumberInput(attrs={'class': 'form-control', 'min':0, 'max':5}),
             'seed': forms.NumberInput(attrs={'class': 'form-control', 'min':0, 'max':9223372036854775807}),
             'user': forms.HiddenInput(),

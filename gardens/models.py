@@ -33,7 +33,7 @@ class Plant(models.Model):
     image = models.ImageField(upload_to="plants/", blank=True, null=True) #Allow no image
     category = models.ForeignKey(Plant_Category, on_delete=models.CASCADE, null=True, blank=True)
     rating = models.SmallIntegerField(default=0, blank=True)
-    seed = models.BigIntegerField(null=True, blank=True) # Check 
+    # seed = models.BigIntegerField(null=True, blank=True) # Check 
 
 
     def __str__(self) -> str:
