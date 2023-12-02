@@ -1,7 +1,7 @@
 import datetime
 from django.shortcuts import redirect, render
 
-from gardens.models import Garden, Garden_Section, Plant, Plant_Category, Plant_Log
+from gardens.models import Garden, Garden_Section, Plant, Plant_Category, Plant_Log, Plant_Note
 from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form, Plant_NoteForm
 
 from django.contrib.auth.decorators import login_required
@@ -395,15 +395,15 @@ def plant_delete_view(request, username, plant_id, *args, **kwargs):
 @login_required
 def plant_info_view(request, username, plant_id, *args, **kwargs):
     try:
-        instance = Plant.objects.get(pk=plant_id)
+        plant_instance = Plant.objects.get(pk=plant_id)
     except Plant.DoesNotExist:
-        instance = None
+        plant_instance = None
 
-    logs = instance.logs.all().order_by('-date', 'garden_section__garden', 'garden_section')
-    # Check if logged in user made the garden
+    logs = plant_instance.logs.all().order_by('-date', 'garden_section__garden', 'garden_section')
+    # Check if logged in user made the plant
     current_user = request.user
-    if(instance != None):
-        if(instance.user.id != current_user.id):
+    if(plant_instance != None):
+        if(plant_instance.user.id != current_user.id):
             return redirect("home")
     
     # Add each year to display indvidualy
@@ -414,14 +414,20 @@ def plant_info_view(request, username, plant_id, *args, **kwargs):
 
     # Create a form to add notes
     note_form = Plant_NoteForm()
+    note_form.initial['plant'] = plant_instance
+
+    # Create a list of notes
+    notes = plant_instance.notes.all().order_by('-date')
+
 
     my_context = {
-        "plant": instance,
+        "plant": plant_instance,
         # Order by date, garden, garden section
         "logs": logs,
         "years": year_list,
         "note_form": note_form,
-        "site_title": instance.variety + " Info"
+        "notes": notes,
+        "site_title": plant_instance.variety + " Info"
     }
 
     return render(request, "users/plant/plant_info.html", my_context) # return an html template
@@ -686,12 +692,92 @@ Manage Plant Notes
 """
 @login_required
 def note_create_view(request, username, plant_id, *args, **kwargs):
+    """ Create or edit an existing plant log. New entries have an id of 0 """
+    form = Plant_NoteForm(request.POST or None)
+
+    # Check if logged in matches the username
+    if(request.user.username != username):
+        return redirect("home")
+    
+    # Check if the url user made the plant
+    try:
+        plant_instance = Plant.objects.get(pk=plant_id, user=request.user)
+    except Plant.DoesNotExist:
+        plant_instance = None
+
+    if(plant_instance is None):
+        return redirect("home")
+
+    if request.method == "POST":
+        form = Plant_NoteForm(request.POST, request.FILES)
+        if form.is_valid():
+            # save the info
+            form.save()
+            return redirect('plant_info', username, plant_id)
+    else: # GET request
+        form = Plant_NoteForm()
+        form.initial['plant'] = plant_instance # Set to url paramater
+
+    site_title = None
+    if form.instance.pk == None:
+        site_title = "Create Plant Note"
+    else:
+        site_title = "Edit Plant Note"
+
+    my_context = {
+        "form": form,
+        "site_title": site_title
+    }
     return redirect("home")
 
 @login_required
 def note_update_view(request, username, plant_id, note_id, *args, **kwargs):
-    return redirect("home")
+    """ Create or edit an existing plant log. New entries have an id of 0 """
+    form = Plant_NoteForm(request.POST or None)
 
+    # Check if logged in matches the username
+    if(request.user.username != username):
+        return redirect("home")
+    
+    # Check if the url user made the plant
+    try:
+        plant_instance = Plant.objects.get(pk=plant_id, user=request.user)
+    except Plant.DoesNotExist:
+        plant_instance = None
+
+    if(plant_instance is None):
+        return redirect("home")
+    
+    # Check if the logged in user matches the note
+    try:
+        note_instance = Plant_Note.objects.get(pk=note_id, plant__user=request.user)
+    except Plant_Note.DoesNotExist:
+        note_instance = None
+
+    if(note_instance is None):
+        return redirect("home")
+
+    if request.method == "POST":
+        form = Plant_NoteForm(request.POST, request.FILES, instance=note_instance)
+        if form.is_valid():
+            # save the info
+            form.save()
+            return redirect('plant_info', username, plant_id)
+    else: # GET request
+        form = Plant_NoteForm()
+        form.initial['plant'] = plant_instance # Set to url paramater
+
+    site_title = None
+    if form.instance.pk == None:
+        site_title = "Create Plant Note"
+    else:
+        site_title = "Edit Plant Note"
+
+    my_context = {
+        "form": form,
+        "site_title": site_title
+    }
+    return redirect("home")
 @login_required
 def note_delete_view(request, username, plant_id, note_id, *args, **kwargs):
     return redirect("home")

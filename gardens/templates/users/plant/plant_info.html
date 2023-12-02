@@ -1,7 +1,19 @@
 {% extends 'base.html' %}
 
 {% block header %}
+<script>
+  function create_plant_note(e) {
+    const form = document.getElementById('note_form');
 
+    form.action = e.dataset.url;
+  }
+
+  function edit_plant_note(e) {
+    const form = document.getElementById('note_form');
+
+    form.action = e.dataset.url;
+  }
+</script>
 {% endblock %}
 
 
@@ -63,7 +75,7 @@
       </div>
       <!-- End of Submit buttons -->
       <div class=" col-12 col-md-4">
-        <a href="{% url 'plant_update' request.user.username plant.id %}" class="btn btn-warning shadow-sm">Edit</a>
+        <a href="{% url 'plant_update' request.user.username plant.id %}" class="btn btn-warning shadow-sm">Edit Plant</a>
       </div>
     </div>
   </div>
@@ -120,7 +132,7 @@
 <!-- Note card -->
 <div class="card shadow mb-2">
   <div class="card-body">
-    <div class="row">
+    <div class="row mb-2">
       <div class="col-6">
         <h2 class="card-title">Notes</h2>
       </div>
@@ -128,7 +140,7 @@
         <!-- Start of Add Button -->
         <div class="d-flex">
           <div class="ms-auto">
-            <button type="button" class="btn btn-primary shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal">
+            <button type="button" class="btn btn-primary shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal" onclick="create_plant_note(this)" data-url="{% url 'note_create' request.user.username plant.id %}">
               Create Note
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
@@ -139,6 +151,34 @@
         <!-- End of Add Button -->
       </div>
     </div>
+    <!-- List of Notes -->
+    {% for note in notes %}
+    <div class="">
+      <div class="card">
+        <div class="card-header">
+          <!-- Start of Add Button -->
+          <div class="d-flex">
+            <h4 class="text-info">
+              {{ note.date }}
+            </h4>
+            <div class="ms-auto">
+              <button type="button" class="btn btn-warning shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal" onclick="edit_plant_note(this)" data-url="{% url 'note_update' request.user.username plant.id note.id%}">
+                Edit Note
+              </button>
+            </div>
+          </div>
+          <!-- End of Add Button -->
+
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            {{ note.text }}
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <!-- End of List of Notes -->
   </div>
 </div>
 <!-- End of Note card -->
@@ -152,15 +192,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="note_form">
+        <form method="post" id="note_form" enctype="multipart/form-data">
           {% csrf_token %}
           {{ note_form.as_p }}
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary shadow-sm" data-bs-dismiss="modal">Close</button>
-        <a href="{% url 'home' %}" class="btn btn-primary shadow-sm">Save</a>
-        </div>
+        <input type="submit" class="btn btn-primary shadow-sm" form="note_form" value="Save" />
+        <!-- formaction="delete/" -->
+      </div>
     </div>
   </div>
 </div>
