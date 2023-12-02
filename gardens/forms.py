@@ -47,4 +47,6 @@ class Plant_LogForm(forms.ModelForm):
         }
 
 class Garden_Section_Date_Form(forms.Form):
-    date = forms.DateField()
+    year = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min':0, 'max':9999})
+    )

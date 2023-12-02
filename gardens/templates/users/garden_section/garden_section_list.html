@@ -7,6 +7,8 @@
 
 {% block content %}
 {% load static %}
+{% load query_transform %}
+
 <div class="card shadow mb-2">
   <div class="card-body">
     <div class="row">
@@ -14,12 +16,29 @@
         <h1 class="text-secondary">{{garden.name}}</h1>
       </div>
       <div class="col-4">
-        <!-- Display Year form -->
-        <form method="get" id="select_year_form">
-          <!-- {% csrf_token %} -->
-          {{ form.as_p }}
-        </form>
-        <!-- Display Year form -->
+        <div class="d-flex align-items-center">
+          <!-- Display Previous Year -->
+          <a class="mx-2 text-info" href="?{% query_transform year=year.previous_year %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+            </svg>
+          </a>
+          <!-- End of Display Previous Year -->
+
+          <!-- Display Year form -->
+          <form method="get" id="select_year_form" class="flex-grow-1">
+            {{ form.as_p }}
+          </form>
+          <!-- End of Display Year form -->
+
+          <!-- Display Next Year -->
+          <a class="mx-2 text-info" href="?{% query_transform year=year.next_year %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+            </svg>
+          </a>
+          <!-- End of Display Next Year -->
+        </div>
       </div>
       <div class="col-4">
         <!-- Start of Submit buttons -->
@@ -91,9 +110,9 @@
           </th>
           <td>
             {% if log.plant.image %}
-              <img src="{{ log.plant.image.url }}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
+            <img src="{{ log.plant.image.url }}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
             {% else %}
-              <img src="{% static 'images/sprout.png' %}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
+            <img src="{% static 'images/sprout.png' %}" class="img-thumbnail" style="max-width: 12.5rem; max-height: 12.5rem;">
             {% endif %}
           </td>
           <td>

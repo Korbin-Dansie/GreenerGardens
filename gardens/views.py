@@ -147,19 +147,20 @@ def garden_section_list_view(request, username, garden_id, *args, **kwargs):
     
     # Set up form to filter by date
     form = Garden_Section_Date_Form()
-    date = request.GET.get('date', datetime.date.today())
-    if not type(date) is datetime.date:
-        date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
-    form.initial['date'] = date
+    year = request.GET.get('year', datetime.date.today().year)
+    if type(year) is not int:
+        year = int(year)
+    form.initial['year'] = year
 
     # Get the all the gardens sections
     sections = instance.sections.all()
     # logs = [section.logs.all() for section in sections]
-    logs = Plant_Log.objects.filter(date__year=date.year, garden_section__in=sections)
+    logs = Plant_Log.objects.filter(date__year=year, garden_section__in=sections)
 
     my_context = {
         "garden": instance,
         "form": form,
+        "year": {"next_year": year + 1, "current_year": year, "previous_year": year - 1},
         "sections": sections,
         "logs": logs,
         "site_title": "My Gardens - " + instance.name,
