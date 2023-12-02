@@ -31,7 +31,7 @@ class Plant(models.Model):
     variety = models.CharField(max_length=64)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) # Store the users info
     image = models.ImageField(upload_to="plants/", blank=True, null=True) #Allow no image
-    category = models.ForeignKey(Plant_Category, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey(Plant_Category, on_delete=models.DO_NOTHING, null=True, blank=True)
     rating = models.SmallIntegerField(default=0, blank=True)
     # seed = models.BigIntegerField(null=True, blank=True) # Check 
 

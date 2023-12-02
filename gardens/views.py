@@ -612,6 +612,13 @@ def plant_category_update_view(request, username, plant_category_id, *args, **kw
     except Plant.DoesNotExist:
         category_instance = None
 
+    try:
+        # A list of plants that have the category
+        plant_list = Plant.objects.filter(category=plant_category_id)
+    except Plant.DoesNotExist:
+        plant_list = None
+
+
     # Check if logged in owns the category
     if(request.user.id != category_instance.user.id):
         return redirect("home")
@@ -640,6 +647,7 @@ def plant_category_update_view(request, username, plant_category_id, *args, **kw
     my_context = {
         "form": form,
         "plant_category": category_instance,
+        "plant_list": plant_list,
         "site_title": site_title
     }
     return render(request, "users/plant_category/plant_category_create.html", my_context) # return an html template
@@ -653,6 +661,14 @@ def plant_category_delete_view(request, username, plant_category_id, *args, **kw
     if(category_instance[0].user.id != request.user.id):
         redirect("users:login")
     
+    try:
+        # A list of plants that have the category
+        plant_list = Plant.objects.filter(category=plant_category_id)
+        # Then set all categories to NULL
+        plant_list.update(category=None)
+    except Plant.DoesNotExist:
+        plant_list = None
+
     form = Plant_CategoryForm(instance=category_instance[0])
     # Update the entires
     if request.method == "POST":
