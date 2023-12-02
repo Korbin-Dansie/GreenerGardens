@@ -25,7 +25,7 @@ from gardens.views import garden_section_list_view, garden_section_create_view, 
 from gardens.views import plant_create_view, plant_update_view, plant_list_view, plant_delete_view, plant_info_view
 from gardens.views import plant_log_create_view, plant_log_update_view, plant_log_delete_view
 from gardens.views import plant_category_list_view, plant_category_create_view, plant_category_update_view, plant_category_delete_view
-
+from gardens.views import note_create_view, note_update_view, note_delete_view
 urlpatterns = [
     path('', home_view, name='home'), # Change the index page
     path('landingPage/', landing_page_view, name='landing_page'), # Change the index page
@@ -55,10 +55,16 @@ urlpatterns = [
     path('users/<str:username>/gardens/<int:garden_id>/section/<int:section_id>/logs/<int:log_id>/delete/', plant_log_delete_view, name='plant_log_delete'), # Delete the plant log
     
     # Manage plants categories
-    path('users/<str:username>/plant/category/', plant_category_list_view , name='plant_category_list'), # Display a list of categories to edit
-    path('users/<str:username>/plant/category/create/', plant_category_create_view , name='plant_category_create'), # Create a new plant category
-    path('users/<str:username>/plant/category/<int:plant_category_id>/', plant_category_update_view, name='plant_category_update'), # Edit the plant category
-    path('users/<str:username>/plant/category/<int:plant_category_id>/delete/', plant_category_delete_view, name='plant_category_delete'), # Delete the plant category
+    path('users/<str:username>/plants/categories/', plant_category_list_view , name='plant_category_list'), # Display a list of categories to edit
+    path('users/<str:username>/plants/categories/create/', plant_category_create_view , name='plant_category_create'), # Create a new plant category
+    path('users/<str:username>/plants/categories/<int:plant_category_id>/', plant_category_update_view, name='plant_category_update'), # Edit the plant category
+    path('users/<str:username>/plants/categories/<int:plant_category_id>/delete/', plant_category_delete_view, name='plant_category_delete'), # Delete the plant category
+
+    # Mange Plant Notes
+    path('users/<str:username>/plants/<int:plant_id>/notes/create/', note_create_view , name='note_create'),
+    path('users/<str:username>/plants/<int:plant_id>/notes/<int:note_id>/', note_update_view , name='note_update'), 
+    path('users/<str:username>/plants/<int:plant_id>/notes/<int:note_id>/delete', note_delete_view , name='note_delete'), 
+
 
     # Mange login and register
     path("users/", include("users.urls")),

@@ -2,7 +2,7 @@ import datetime
 from django.shortcuts import redirect, render
 
 from gardens.models import Garden, Garden_Section, Plant, Plant_Category, Plant_Log
-from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form
+from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form, Plant_NoteForm
 
 from django.contrib.auth.decorators import login_required
 
@@ -412,11 +412,15 @@ def plant_info_view(request, username, plant_id, *args, **kwargs):
         if( not log.date.year in year_list):
             year_list.append(log.date.year)
 
+    # Create a form to add notes
+    note_form = Plant_NoteForm()
+
     my_context = {
         "plant": instance,
         # Order by date, garden, garden section
         "logs": logs,
         "years": year_list,
+        "note_form": note_form,
         "site_title": instance.variety + " Info"
     }
 
@@ -569,7 +573,6 @@ def plant_category_list_view(request, username, *args, **kwargs):
     }
     return render(request, "users/plant_category/plant_category_list.html", my_context) # return an html template
 
-
 @login_required
 def plant_category_create_view(request, username, *args, **kwargs):
     """ Create or edit an existing plant log. New entries have an id of 0 """
@@ -652,7 +655,6 @@ def plant_category_update_view(request, username, plant_category_id, *args, **kw
     }
     return render(request, "users/plant_category/plant_category_create.html", my_context) # return an html template
 
-
 @login_required
 def plant_category_delete_view(request, username, plant_category_id, *args, **kwargs):
     # Check if the user has privilege to access the plant
@@ -677,3 +679,20 @@ def plant_category_delete_view(request, username, plant_category_id, *args, **kw
             category_instance[0].delete()
             return redirect('plant_category_list', request.user.username)
     return redirect("home")
+
+
+"""
+Manage Plant Notes
+"""
+@login_required
+def note_create_view(request, username, plant_id, *args, **kwargs):
+    return redirect("home")
+
+@login_required
+def note_update_view(request, username, plant_id, note_id, *args, **kwargs):
+    return redirect("home")
+
+@login_required
+def note_delete_view(request, username, plant_id, note_id, *args, **kwargs):
+    return redirect("home")
+

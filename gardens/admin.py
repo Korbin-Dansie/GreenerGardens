@@ -15,3 +15,6 @@ admin.site.register(Plant)
 
 from .models import Plant_Log
 admin.site.register(Plant_Log)
+
+from .models import Plant_Note
+admin.site.register(Plant_Note)

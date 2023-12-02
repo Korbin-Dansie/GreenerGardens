@@ -29,17 +29,17 @@
               </h2>
             </td>
             <td class="px-1">
-                <h2>
+              <h2>
                 {{ plant.variety }}
               </h2>
             </td>
           </tr>
           <tr class="p-1">
             <td class="px-1">
-                <h5>Category:</h5>
+              <h5>Category:</h5>
             </td>
             <td class="px-1">
-                {% if plant.category.name is not None %}
+              {% if plant.category.name is not None %}
               <h5>
                 {{ plant.category.name }}
               </h5>
@@ -51,10 +51,10 @@
           </tr>
           <tr class="p-1">
             <td class="px-1">
-                <h5>Rating:</h5>
+              <h5>Rating:</h5>
             </td>
             <td class="px-1">
-                <h5>
+              <h5>
                 {{ plant.rating }}
               </h5>
             </td>
@@ -74,7 +74,9 @@
   <div class="card-body">
     <h2 class="card-title">History</h2>
     {% for year in years %}
-    <h2 class="text-info">{{ year }}</h2>
+    <h2 class="text-info">
+      {{ year }}
+    </h2>
     <table class="table">
       <thead>
         <tr>
@@ -113,6 +115,54 @@
     {% endfor %}
   </div>
 </div>
-</div>
 <!-- End of Log / History card -->
+
+<!-- Note card -->
+<div class="card shadow mb-2">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-6">
+        <h2 class="card-title">Notes</h2>
+      </div>
+      <div class="col-6">
+        <!-- Start of Add Button -->
+        <div class="d-flex">
+          <div class="ms-auto">
+            <button type="button" class="btn btn-primary shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal">
+              Create Note
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <!-- End of Add Button -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Note card -->
+
+<!-- Modal to display note form -->
+<div class="modal fade" id="note_modal" tabindex="-1" aria-labelledby="note_modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-5" id="note_modalLabel">Create Note</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="note_form">
+          {% csrf_token %}
+          {{ note_form.as_p }}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary shadow-sm" data-bs-dismiss="modal">Close</button>
+        <a href="{% url 'home' %}" class="btn btn-primary shadow-sm">Save</a>
+        </div>
+    </div>
+  </div>
+</div>
+<!-- End of Modal to display note form-->
 {% endblock %}
