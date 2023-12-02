@@ -19,6 +19,9 @@
         <li class="nav-item">
           <a class="nav-link bd-navbar-link text-light" href="{% url 'plant_list' request.user.username %}">Manage Plants</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link bd-navbar-link text-light" href="{% url 'plant_category_list' request.user.username %}">Manage Plant Categories</a>
+        </li>
         {% endif %}
       </ul>
       <ul class="navbar-nav navbar-right ms-auto mb-2 mb-sm-0">

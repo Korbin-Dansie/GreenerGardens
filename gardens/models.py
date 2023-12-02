@@ -37,6 +37,11 @@ class Plant(models.Model):
 
 
     def __str__(self) -> str:
+        category = self.category
+
+        if(category is not None):
+            return self.variety + " - " + category.name
+        
         return self.variety
     
 

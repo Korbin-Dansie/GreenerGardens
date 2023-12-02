@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block header %}
+
+{% endblock %}
+
+
+{% block content %}
+{% load static %}
+<h1>Manage Plants Categories</h1>
+
+<div class="card shadow">
+  <div class="card-body">
+    <p class="card-text">
+      <!-- Start of Add Button -->
+    <div class="d-flex">
+      <div class="ms-auto">
+        <a href="{% url 'plant_category_create' request.user.username %}" class="btn btn-primary shadow-sm ms-auto">
+          Create Plant Category
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+    <!-- End of Add Button -->
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Edit</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in plant_categories %}
+        <tr>
+          <th scope="row">
+            {{ forloop.counter }}
+          </th>
+          <td>
+            {{ category.name }}
+          </td>
+          <td>
+            <a href="{% url 'plant_category_update' request.user.username category.id %}" class="btn btn-warning shadow-sm">Edit</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </p>
+  </div>
+</div>
+
+
+
+
+{% endblock %}

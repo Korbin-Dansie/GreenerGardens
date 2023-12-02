@@ -1,8 +1,8 @@
 import datetime
 from django.shortcuts import redirect, render
 
-from gardens.models import Garden, Garden_Section, Plant, Plant_Log
-from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_LogForm, Garden_Section_Date_Form
+from gardens.models import Garden, Garden_Section, Plant, Plant_Category, Plant_Log
+from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form
 
 from django.contrib.auth.decorators import login_required
 
@@ -544,4 +544,112 @@ def plant_log_delete_view(request, username, garden_id, section_id, log_id, *arg
         if form.is_valid():
             instance[0].delete()
             return redirect('plant_info', request.user.username, plant_id)
+    return redirect("home")
+
+"""
+Manage Plant Categories
+"""
+@login_required
+def plant_category_list_view(request, username, *args, **kwargs): 
+    # Check if the url user is the same as the logged in user
+    if(request.user.username != username):
+        return redirect("home")
+
+    my_context = {
+        "plant_categories": Plant_Category.objects.filter(user=request.user),
+        "site_title": "My Plant Categories"
+    }
+    return render(request, "users/plant_category/plant_category_list.html", my_context) # return an html template
+
+
+@login_required
+def plant_category_create_view(request, username, *args, **kwargs):
+    """ Create or edit an existing plant log. New entries have an id of 0 """
+    form = Plant_CategoryForm(request.POST or None)
+
+    # Check if logged in matches the username
+    if(request.user.username != username):
+        return redirect("home")
+
+    if request.method == "POST":
+        form = Plant_CategoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.initial['user'] = request.user # Set to url paramater            
+            # save the info
+            form.save()
+            return redirect('plant_category_list', username)
+    else: # GET request
+        form = Plant_CategoryForm()
+        form.initial['user'] = request.user # Set to url paramater
+
+    site_title = None
+    if form.instance.pk == None:
+        site_title = "Create Plant Log"
+    else:
+        site_title = "Edit Plant Log"
+
+    my_context = {
+        "form": form,
+        "site_title": site_title
+    }
+    return render(request, "users/plant_category/plant_category_create.html", my_context) # return an html template
+
+@login_required
+def plant_category_update_view(request, username, plant_category_id, *args, **kwargs):
+    """ Create or edit an existing plant log. New entries have an id of 0 """
+    form = Plant_CategoryForm(request.POST or None)
+
+    try:
+        category_instance = Plant_Category.objects.get(pk=plant_category_id)
+    except Plant.DoesNotExist:
+        category_instance = None
+
+    # Check if logged in owns the category
+    if(request.user.id != category_instance.user.id):
+        return redirect("home")
+
+    # Check if logged in matches the username
+    if(request.user.username != username):
+        return redirect("home")
+
+    if request.method == "POST":
+        form = Plant_CategoryForm(request.POST, request.FILES, instance=category_instance)
+        if form.is_valid():
+            form.initial['user'] = request.user # Set to url paramater            
+            # save the info
+            form.save()
+            return redirect('plant_category_list', username)
+    else: # GET request
+        form = Plant_CategoryForm(instance=category_instance)
+        form.initial['user'] = request.user # Set to url paramater
+
+    site_title = None
+    if form.instance.pk == None:
+        site_title = "Create Plant Log"
+    else:
+        site_title = "Edit Plant Log"
+
+    my_context = {
+        "form": form,
+        "plant_category": category_instance,
+        "site_title": site_title
+    }
+    return render(request, "users/plant_category/plant_category_create.html", my_context) # return an html template
+
+
+@login_required
+def plant_category_delete_view(request, username, plant_category_id, *args, **kwargs):
+    # Check if the user has privilege to access the plant
+    category_instance = Plant_Category.objects.filter(id=plant_category_id)[:1] # Limit to the first post
+
+    if(category_instance[0].user.id != request.user.id):
+        redirect("users:login")
+    
+    form = Plant_CategoryForm(instance=category_instance[0])
+    # Update the entires
+    if request.method == "POST":
+        form = Plant_CategoryForm(request.POST, instance=category_instance[0])
+        if form.is_valid():
+            category_instance[0].delete()
+            return redirect('plant_category_list', request.user.username)
     return redirect("home")

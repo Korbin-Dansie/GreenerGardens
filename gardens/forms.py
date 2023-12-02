@@ -1,5 +1,5 @@
 from django import forms
-from .models import Garden, Garden_Section, Plant, Plant_Log
+from .models import Garden, Garden_Section, Plant, Plant_Log, Plant_Category
 
 class GardenForm(forms.ModelForm):
     class Meta:
@@ -32,6 +32,15 @@ class PlantForm(forms.ModelForm):
             'category': forms.TextInput(attrs={'class': 'form-select'}),
             'rating': forms.NumberInput(attrs={'class': 'form-control', 'min':0, 'max':5}),
             'seed': forms.NumberInput(attrs={'class': 'form-control', 'min':0, 'max':9223372036854775807}),
+            'user': forms.HiddenInput(),
+        }
+
+class Plant_CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Plant_Category
+        fields = "__all__"
+        widgets =   { 
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
             'user': forms.HiddenInput(),
         }
 
