@@ -53,3 +53,9 @@ class Plant_Log(models.Model):
 
     def __str__(self) -> str:
         return self.garden_section.garden.name + " - " + self.garden_section.name + " - " + self.plant.variety
+    
+
+class Plant_Note(models.Model):
+    plant = models.ForeignKey(Plant, on_delete=models.DO_NOTHING, related_name="notes")
+    date = models.DateField(default=datetime.date.today)
+    text = models.TextField(blank=False, null=False)
