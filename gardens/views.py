@@ -157,12 +157,18 @@ def garden_section_list_view(request, username, garden_id, *args, **kwargs):
     # logs = [section.logs.all() for section in sections]
     logs = Plant_Log.objects.filter(date__year=year, garden_section__in=sections)
 
+    # Create a form to add garden sections
+    garden_section_form = Garden_SectionForm()
+    garden_section_form.initial['garden'] = instance
+
+
     my_context = {
         "garden": instance,
         "form": form,
         "year": {"next_year": year + 1, "current_year": year, "previous_year": year - 1},
         "sections": sections,
         "logs": logs,
+        "garden_section_form": garden_section_form,
         "site_title": "My Gardens - " + instance.name,
     }
     return render(request, "users/garden_section/garden_section_list.html", my_context) # return an html template
@@ -279,7 +285,7 @@ def garden_section_delete_view(request, username, garden_id, section_id, *args, 
         form = Garden_SectionForm(request.POST, instance=instance[0])
         if form.is_valid():
             instance[0].delete()
-            return redirect("garden_section_list", garden_id)
+            return redirect("garden_section_list", username, garden_id)
     return redirect("home")
 
 """
