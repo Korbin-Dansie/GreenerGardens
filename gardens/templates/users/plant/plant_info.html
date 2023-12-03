@@ -4,14 +4,30 @@
 <script>
   function create_plant_note(e) {
     const form = document.getElementById('note_form');
-
+    // Set the form values to the default values
     form.action = e.dataset.url;
+
+    if(e.dataset.text == 'None'){
+      form.querySelector('#id_text').value = '';
+    }
+    else{
+      form.querySelector('#id_text').value = e.dataset.text;
+    }
+    
+    form.querySelector('#id_date').value = e.dataset.date;
+
   }
 
   function edit_plant_note(e) {
     const form = document.getElementById('note_form');
+    const note_id = e.dataset.note_id;
+    const note_text_element = document.getElementById('note_text_' + note_id);
+    const note_date_element = document.getElementById('note_date_' + note_id);
 
+    // Set the form values to the notes values
     form.action = e.dataset.url;
+    form.querySelector('#id_text').value = note_text_element.innerText;
+    form.querySelector('#id_date').value = note_date_element.dataset.date;
   }
 </script>
 {% endblock %}
@@ -140,7 +156,7 @@
         <!-- Start of Add Button -->
         <div class="d-flex">
           <div class="ms-auto">
-            <button type="button" class="btn btn-primary shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal" onclick="create_plant_note(this)" data-url="{% url 'note_create' request.user.username plant.id %}">
+            <button type="button" class="btn btn-primary shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal" onclick="create_plant_note(this)" data-url="{% url 'note_create' request.user.username plant.id %}" data-date='{{ note_form.date.value|date:"Y-m-d"  }}' data-text='{{ note_form.text.value }}'>
               Create Note
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
@@ -158,11 +174,11 @@
         <div class="card-header">
           <!-- Start of Add Button -->
           <div class="d-flex">
-            <h4 class="text-info">
+            <h4 class="text-info" id="note_date_{{ note.id }}" data-date='{{ note.date|date:"Y-m-d"  }}'>
               {{ note.date }}
             </h4>
             <div class="ms-auto">
-              <button type="button" class="btn btn-warning shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal" onclick="edit_plant_note(this)" data-url="{% url 'note_update' request.user.username plant.id note.id%}">
+              <button type="button" class="btn btn-warning shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal" onclick="edit_plant_note(this)" data-url="{% url 'note_update' request.user.username plant.id note.id%}" data-note_id="{{ note.id }}">
                 Edit Note
               </button>
             </div>
@@ -171,7 +187,7 @@
 
         </div>
         <div class="card-body">
-          <p class="card-text">
+          <p class="card-text" id="note_text_{{ note.id }}">
             {{ note.text }}
           </p>
         </div>
