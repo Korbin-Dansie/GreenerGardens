@@ -161,6 +161,12 @@ def garden_section_list_view(request, username, garden_id, *args, **kwargs):
     garden_section_form = Garden_SectionForm()
     garden_section_form.initial['garden'] = instance
 
+    # Create a form to add garden sections
+    plant_log_form = Plant_LogForm()
+    plant_log_form.initial['garden'] = instance
+
+    user_plant_list = Plant.objects.filter(user=request.user.id)
+    plant_log_form.fields['plant'].queryset = user_plant_list
 
     my_context = {
         "garden": instance,
@@ -169,6 +175,7 @@ def garden_section_list_view(request, username, garden_id, *args, **kwargs):
         "sections": sections,
         "logs": logs,
         "garden_section_form": garden_section_form,
+        "plant_log_form": plant_log_form,
         "site_title": "My Gardens - " + instance.name,
     }
     return render(request, "users/garden_section/garden_section_list.html", my_context) # return an html template
@@ -452,8 +459,6 @@ def plant_log_create_view(request, username, garden_id, section_id, *args, **kwa
         section_instance = Garden_Section.objects.get(pk=section_id, garden=garden_id)
     except Garden_Section.DoesNotExist:
         section_instance = None
-
-
 
     # Check if logged in user made the garden section and owns the plant
     if(request.user.id != section_instance.garden.user.id):

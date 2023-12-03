@@ -33,6 +33,40 @@
     form_delete_button.style.display = 'Block';
     form_delete_button.setAttribute('formaction', e.dataset.delete_url);
   }
+
+  function create_plant_log(e) {
+    const form = document.getElementById('plant_log_form');
+    const garden_section_id = e.dataset.garden_section_id;
+    form.querySelector('#id_garden_section').value = garden_section_id;
+
+    // Change the header
+    const garden_section_name_element = document.getElementById('section_name_' + garden_section_id);
+    const plant_modal_header = document.getElementById('plant_modal_header_section_name');
+    plant_modal_header.innerText = garden_section_name_element.innerText;
+
+    // Set the form values to the default values
+    form.action = e.dataset.url;
+    if (e.dataset.plant == 'None' || !("plant" in e.dataset)) {
+      form.querySelector('#id_plant').value = '';
+    } else {
+      form.querySelector('#id_plant').value = e.dataset.plant;
+    }
+    if (e.dataset.date == 'None' || !("date" in e.dataset)) {
+      form.querySelector('#id_date').value = '';
+    } else {
+      form.querySelector('#id_date').value = e.dataset.date;
+    }
+    if (e.dataset.count == 'None' || !("count" in e.dataset)) {
+      form.querySelector('#id_count').value = '';
+    } else {
+      form.querySelector('#id_count').value = e.dataset.count;
+    }
+
+    // Disable to delete button
+    const form_delete_button = document.getElementById('form_delete_button');
+    form_delete_button.style.display = 'None';
+    form_delete_button.removeAttribute('formaction');
+  }
 </script>
 {% endblock %}
 
@@ -85,8 +119,7 @@
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
               </svg>
             </a> -->
-            <button type="button" class="btn btn-primary shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#garden_section_modal" onclick="create_garden_section(this)"
-             data-url="{% url 'garden_section_create' request.user.username garden.id %}" data-name='{{ garden_section_form.name.value }}'>
+            <button type="button" class="btn btn-primary shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#garden_section_modal" onclick="create_garden_section(this)" data-url="{% url 'garden_section_create' request.user.username garden.id %}" data-name='{{ garden_section_form.name.value }}'>
               Add Section
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
@@ -116,18 +149,20 @@
             <!-- <a href="{% url 'garden_section_update' request.user.username garden.id section.id %}" class="btn btn-warning shadow-sm">
               Edit Section
             </a> -->
-            <button type="button" class="btn btn-warning shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#garden_section_modal" onclick="edit_garden_section(this)"
-            data-garden_section_id="{{ section.id }}" data-url="{% url 'garden_section_update' request.user.username garden.id section.id %}" 
-            data-delete_url="{% url 'garden_section_delete' request.user.username garden.id section.id %}">
-             Edit Section
-           </button>
-
-            <a href="{% url 'plant_log_create' request.user.username garden.id section.id %}" class="btn btn-primary shadow-sm">
+            <!-- Start of Edit Section Button -->
+            <button type="button" class="btn btn-warning shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#garden_section_modal" onclick="edit_garden_section(this)" data-garden_section_id="{{ section.id }}" data-url="{% url 'garden_section_update' request.user.username garden.id section.id %}" data-delete_url="{% url 'garden_section_delete' request.user.username garden.id section.id %}">
+              Edit Section
+            </button>
+            <!-- End of Edit Section Button -->
+            <!-- Start of Create New Log Button -->
+            <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#plant_log_modal" onclick="create_plant_log(this)" data-garden_section_id="{{ section.id }}" data-url="{% url 'plant_log_create' request.user.username garden.id section.id %}" data-plant='{{ plant_log_form.plant.value }}' data-date='{{ plant_log_form.date.value|date:"Y-m-d" }}' data-count='{{ plant_log_form.count.value }}'>
               Add New Log
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
               </svg>
-            </a>
+            </button>
+            <!-- End of Create New Log Button -->
+
           </div>
         </div>
         <!-- End of Submit buttons -->
@@ -142,7 +177,7 @@
           <th scope="col">Image</th>
           <th scope="col">Name</th>
           <th scope="col">Count</th>
-          <th scope="col">Edit</th>
+          <th scope="col">Info</th>
         </tr>
       </thead>
       <tbody>
@@ -180,7 +215,6 @@
 </div>
 {% endfor %}
 
-
 <!-- Modal to display garden section form -->
 <div class="modal fade" id="garden_section_modal" tabindex="-1" aria-labelledby="garden_section_modalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -203,11 +237,54 @@
         </div>
         <div class="ms-auto">
           <button type="button" class="btn btn-secondary shadow-sm" data-bs-dismiss="modal">Close</button>
-          <input type="submit" class="btn btn-primary shadow-sm" form="garden_section_form" value="Save" />  
+          <input type="submit" class="btn btn-primary shadow-sm" form="garden_section_form" value="Save" />
         </div>
       </div>
     </div>
   </div>
 </div>
-<!-- End of Modal to display note form-->
+<!-- End of Modal to garden section form-->
+<!-- Modal to create a new log -->
+<div class="modal fade" id="plant_log_modal" tabindex="-1" aria-labelledby="plant_log_modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-5" id="plant_log_modalLabel">Create Log - <span id="plant_modal_header_section_name">???</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Start of Add Button -->
+        <div class="d-flex">
+          <div class="ms-auto">
+            <a href="{% url 'plant_create' request.user.username %}" class="btn btn-primary shadow-sm ms-auto">
+              Create New Plant
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill d-inline-block mb-1" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <!-- End of Add Button -->
+
+        <form method="post" id="plant_log_form" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ plant_log_form.as_p }}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="d-flex">
+          <div class="">
+            <input type="submit" class="btn btn-danger" id="log_form_delete_button" form="plant_log_form" value="Delete" />
+          </div>
+        </div>
+        <div class="ms-auto">
+          <button type="button" class="btn btn-secondary shadow-sm" data-bs-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary shadow-sm" form="plant_log_form" value="Save" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Modal to create a new log -->
+
 {% endblock %}
