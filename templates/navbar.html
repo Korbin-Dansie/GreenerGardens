@@ -1,6 +1,10 @@
+{% load static %}
 <nav class="container-xxl navbar navbar-expand-sm">
   <div class="container-fluid">
-    <a class="navbar-brand py-1 text-light fw-bold" href="{% url 'home' %}">Greener Gardens</a>
+    <a class="navbar-brand py-1 text-light fw-bold" href="{% url 'home' %}">
+      <img src="{% static 'leaf.png' %}" alt="Logo" width="30" height="30" class="d-inline-block align-middle p-1 bg-light rounded">
+      Greener Gardens
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapsable" aria-controls="navbarCollapsable" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -8,19 +12,19 @@
       <ul class="navbar-nav navbar-left me-auto mb-2 mb-sm-0">
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link bd-navbar-link text-light" href="{% url 'home' %}">My Gardens</a>
+          <a class="nav-link text-light" href="{% url 'home' %}">My Gardens</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link bd-navbar-link text-light" href="{% url 'garden_list' request.user.username %}">Manage Gardens</a>
+          <a class="nav-link text-light" href="{% url 'garden_list' request.user.username %}">Manage Gardens</a>
         </li>
         <li class="nav-item">
-          <!-- <a class="nav-link bd-navbar-link text-light" href="{% url 'plant_create' request.user.username %}">Create Plant</a> -->
+          <!-- <a class="nav-link  text-light" href="{% url 'plant_create' request.user.username %}">Create Plant</a> -->
         </li>
         <li class="nav-item">
-          <a class="nav-link bd-navbar-link text-light" href="{% url 'plant_list' request.user.username %}">Manage Plants</a>
+          <a class="nav-link text-light" href="{% url 'plant_list' request.user.username %}">Manage Plants</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link bd-navbar-link text-light" href="{% url 'plant_category_list' request.user.username %}">Manage Plant Categories</a>
+          <a class="nav-link text-light" href="{% url 'plant_category_list' request.user.username %}">Manage Plant Categories</a>
         </li>
         {% endif %}
       </ul>
