@@ -63,7 +63,7 @@ urlpatterns = [
     # Mange Plant Notes
     path('users/<str:username>/plants/<int:plant_id>/notes/create/', note_create_view , name='note_create'),
     path('users/<str:username>/plants/<int:plant_id>/notes/<int:note_id>/', note_update_view , name='note_update'), 
-    path('users/<str:username>/plants/<int:plant_id>/notes/<int:note_id>/delete', note_delete_view , name='note_delete'), 
+    path('users/<str:username>/plants/<int:plant_id>/notes/<int:note_id>/delete/', note_delete_view , name='note_delete'), 
 
 
     # Mange login and register

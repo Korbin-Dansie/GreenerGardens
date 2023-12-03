@@ -7,14 +7,18 @@
     // Set the form values to the default values
     form.action = e.dataset.url;
 
-    if(e.dataset.text == 'None'){
+    if (e.dataset.text == 'None') {
       form.querySelector('#id_text').value = '';
-    }
-    else{
+    } else {
       form.querySelector('#id_text').value = e.dataset.text;
     }
-    
+
     form.querySelector('#id_date').value = e.dataset.date;
+
+    // Disable to delete button
+    const form_delete_button = document.getElementById('form_delete_button');
+    form_delete_button.style.display = 'None';
+    form_delete_button.removeAttribute('formaction');
 
   }
 
@@ -28,6 +32,11 @@
     form.action = e.dataset.url;
     form.querySelector('#id_text').value = note_text_element.innerText;
     form.querySelector('#id_date').value = note_date_element.dataset.date;
+
+    // Enable to delete button
+    const form_delete_button = document.getElementById('form_delete_button');
+    form_delete_button.style.display = 'Block';
+    form_delete_button.setAttribute('formaction', e.dataset.delete_url);
   }
 </script>
 {% endblock %}
@@ -178,7 +187,8 @@
               {{ note.date }}
             </h4>
             <div class="ms-auto">
-              <button type="button" class="btn btn-warning shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal" onclick="edit_plant_note(this)" data-url="{% url 'note_update' request.user.username plant.id note.id%}" data-note_id="{{ note.id }}">
+              <button type="button" class="btn btn-warning shadow-sm ms-auto" data-bs-toggle="modal" data-bs-target="#note_modal" onclick="edit_plant_note(this)"
+               data-note_id="{{ note.id }}" data-url="{% url 'note_update' request.user.username plant.id note.id%}" data-delete_url="{% url 'note_delete' request.user.username plant.id note.id%}">
                 Edit Note
               </button>
             </div>
@@ -214,9 +224,15 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary shadow-sm" data-bs-dismiss="modal">Close</button>
-        <input type="submit" class="btn btn-primary shadow-sm" form="note_form" value="Save" />
-        <!-- formaction="delete/" -->
+        <div class="d-flex">
+          <div class="">
+            <input type="submit" class="btn btn-danger" id="form_delete_button" form="note_form" value="Delete" />
+          </div>
+        </div>
+        <div class="ms-auto">
+          <button type="button" class="btn btn-secondary shadow-sm" data-bs-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary shadow-sm" form="note_form" value="Save" />  
+        </div>
       </div>
     </div>
   </div>

@@ -778,7 +778,21 @@ def note_update_view(request, username, plant_id, note_id, *args, **kwargs):
         "site_title": site_title
     }
     return redirect("home")
+
 @login_required
 def note_delete_view(request, username, plant_id, note_id, *args, **kwargs):
+    # Check if the user has privilege to access the note
+    note_instance = Plant_Note.objects.filter(id=note_id)[:1] # Limit to the first post
+
+    if(note_instance[0].plant.user.id != request.user.id):
+        redirect("users:login")
+
+    form = Plant_NoteForm(instance=note_instance[0])
+    # Update the entires
+    if request.method == "POST":
+        form = Plant_NoteForm(request.POST, instance=note_instance[0])
+        if form.is_valid():
+            note_instance[0].delete()
+            return redirect('plant_info', username, plant_id)
     return redirect("home")
 
