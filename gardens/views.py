@@ -1,5 +1,6 @@
 import datetime
 from django.shortcuts import redirect, render
+from django.db.models import Q
 
 from gardens.models import Garden, Garden_Section, Plant, Plant_Category, Plant_Log, Plant_Note
 from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form, Plant_NoteForm, Plant_Search_Form
@@ -318,7 +319,7 @@ def plant_list_view(request, username, *args, **kwargs):
             plant_name = search_form.data['plant_name']
 
     if plant_name != "" and plant_name is not None:
-        user_plant_list = user_plant_list.filter(variety__icontains = plant_name)
+        user_plant_list = user_plant_list.filter(Q(variety__icontains = plant_name) | Q(category__name__icontains = plant_name))
 
     paginator = Paginator(user_plant_list, 25)  # Show 25 contacts per page.
 
