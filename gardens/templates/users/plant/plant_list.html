@@ -16,26 +16,49 @@
       <!-- Start of Add Button -->
     <div class="d-flex">
       <!-- Start of search -->
-      <div class="flex-fill">    
+      <div class="flex-fill">
         <form method="GET">
+          {{ search_form.non_field_errors }}
+
+          {% for hidden_field in search_form.hidden_fields %}
+          {{ hidden_field.errors }}
+          {{ hidden_field }}
+          {% endfor %}
+
+          {% for field in search_form.visible_fields %}
+          <p>
+          {% if field.name == 'plant_name' %}
+            <!-- Start of Add Button -->
           <div class="d-flex flex-row">
             <div class="flex-grow-1 me-1">
               <div class="input-group">
                 <div class="input-group-text bg-primary">
                   <span class="text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                     </svg>
                   </span>
                 </div>
-                <input type="search" class="form-control" name="plant_name" placeholder="Search...">
+                {{ field }}
               </div>
             </div>
             <input type="submit" class="btn btn-primary" value="Submit">
           </div>
+          <!-- End of Add Button -->
+          {% else %}
+
+          {{ field.label_tag }}
+          {{ field.errors }}
+          {{ field }}
+          {{ field.help_text }}
+
+          {% endif %}
+          </p>
+          {% endfor %}
+
         </form>
 
-        
+
       </div>
       <!-- End of search -->
       <!-- Place Holder to empty fill -->
@@ -115,7 +138,7 @@
           <a class="page-link" href="?{% query_transform page=1 %}">First</a>
         </li>
         {% endif %}
-  
+
         <!-- Start of previous button -->
         {% if plants.has_previous %}
         <li class="page-item">
@@ -134,7 +157,7 @@
           <a class="page-link">
             {{ i }}</a>
         </li>
-  
+
         {% else %}
         {% if i == plants.paginator.ELLIPSIS %}
         <li class="page-item">
@@ -157,7 +180,7 @@
         <li class="disabled page-item"><span class="page-link">Next</span></li>
         {% endif %}
         <!-- End of next -->
-  
+
         {% if plants.has_next %}
         <li class="page-item">
           <a class="page-link" href="?{% query_transform page=plants.paginator.num_pages %}">Last</a>
@@ -168,9 +191,9 @@
         </li>
         {% endif %}
         </li>
-      </ul>  
-    <!-- End of Pagination -->
-    </p>
+      </ul>
+      <!-- End of Pagination -->
+      </p>
   </div>
 </div>
 

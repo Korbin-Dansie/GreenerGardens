@@ -69,3 +69,12 @@ class Garden_Section_Date_Form(forms.Form):
     year = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': 'form-control', 'min':0, 'max':9999})
     )
+
+
+class Plant_Search_Form(forms.Form):
+    plant_name = forms.CharField(
+        label="", 
+        help_text="",
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'Search...'})
+    )

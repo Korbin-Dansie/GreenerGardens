@@ -2,7 +2,7 @@ import datetime
 from django.shortcuts import redirect, render
 
 from gardens.models import Garden, Garden_Section, Plant, Plant_Category, Plant_Log, Plant_Note
-from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form, Plant_NoteForm
+from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form, Plant_NoteForm, Plant_Search_Form
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -310,7 +310,9 @@ def plant_list_view(request, username, *args, **kwargs):
 
     # Filter dynamicly with a form 
     # Filter based on variables for a book name
-    plant_name = request.GET.get("plant_name")
+    search_form = Plant_Search_Form(request.GET or None)
+    plant_name = search_form.data['plant_name']
+
     if plant_name != "" and plant_name is not None:
         user_plant_list = user_plant_list.filter(variety__icontains = plant_name)
 
@@ -327,6 +329,7 @@ def plant_list_view(request, username, *args, **kwargs):
     my_context = {
         "plants": plant_paginator,
         "page_range": page_range,
+        "search_form": search_form,
         "site_title": "My Gardens"
     }
     return render(request, "users/plant/plant_list.html", my_context) # return an html template
