@@ -311,7 +311,11 @@ def plant_list_view(request, username, *args, **kwargs):
     # Filter dynamicly with a form 
     # Filter based on variables for a book name
     search_form = Plant_Search_Form(request.GET or None)
-    plant_name = search_form.data['plant_name']
+    plant_name = None
+
+    if search_form.is_valid():
+        if(search_form.cleaned_data['plant_name'] != '' and search_form.cleaned_data['plant_name'] is not None):
+            plant_name = search_form.data['plant_name']
 
     if plant_name != "" and plant_name is not None:
         user_plant_list = user_plant_list.filter(variety__icontains = plant_name)
@@ -346,7 +350,7 @@ def plant_create_view(request, username, *args, **kwargs):
             form.cleaned_data['user'] = request.user # Set to the current logged in user
             # save the info
             form.save()
-            return redirect("home")
+            return redirect("plant_list", username)
     else: # GET request
         form = PlantForm()
         form.initial['user'] = request.user.id # Set to the current logged in user
@@ -390,7 +394,7 @@ def plant_update_view(request, username, plant_id, *args, **kwargs):
             form.cleaned_data['user'] = request.user # Set to the current logged in user
             # save the info
             form.save()
-            return redirect("home")
+            return redirect("plant_list", username)
     else: # GET request
         form = PlantForm(instance=instance)
         form.initial['user'] = request.user.id # Set to the current logged in user
