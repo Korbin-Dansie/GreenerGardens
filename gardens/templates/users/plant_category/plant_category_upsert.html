@@ -31,7 +31,7 @@
         </div>
         {% endif %}
         <div class="ms-auto">
-          <a href="{% url 'home' %}" class="btn btn-secondary shadow-sm">Cancel</a>
+          <a href="{% url 'plant_category_list' request.user.username %}" class="btn btn-secondary shadow-sm">Cancel</a>
           {% if plant_category.id != None %}
           <input href="{% url 'plant_category_update' plant_category.user.username plant_category.id %}" type="submit" class="btn btn-primary shadow-sm" value="Save" />
           {% else %}

@@ -1,10 +1,12 @@
 import datetime
 from django.shortcuts import redirect, render
+from django.db.models import Q
 
 from gardens.models import Garden, Garden_Section, Plant, Plant_Category, Plant_Log, Plant_Note
-from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form, Plant_NoteForm
+from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form, Plant_NoteForm, Plant_Search_Form
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 # Create your views here.
 def home_view(request, *args, **kwargs):
@@ -304,9 +306,35 @@ def plant_list_view(request, username, *args, **kwargs):
     current_user = request.user 
     if(current_user.username != username):
         return redirect("home") 
+    
+    user_plant_list = Plant.objects.filter(user=current_user)
+
+    # Filter dynamicly with a form 
+    # Filter based on variables for a book name
+    search_form = Plant_Search_Form(request.GET or None)
+    plant_name = None
+
+    if search_form.is_valid():
+        if(search_form.cleaned_data['plant_name'] != '' and search_form.cleaned_data['plant_name'] is not None):
+            plant_name = search_form.data['plant_name']
+
+    if plant_name != "" and plant_name is not None:
+        user_plant_list = user_plant_list.filter(Q(variety__icontains = plant_name) | Q(category__name__icontains = plant_name))
+
+    paginator = Paginator(user_plant_list, 25)  # Show 25 contacts per page.
+
+    page_number = request.GET.get("page")
+    if page_number == "" or page_number == None:
+        page_number = 1
+    
+    plant_paginator = paginator.get_page(page_number)
+    page_range = paginator.get_elided_page_range(number=page_number) # add ellipsis
+
 
     my_context = {
-        "plants": Plant.objects.filter(user=current_user),
+        "plants": plant_paginator,
+        "page_range": page_range,
+        "search_form": search_form,
         "site_title": "My Gardens"
     }
     return render(request, "users/plant/plant_list.html", my_context) # return an html template
@@ -323,7 +351,7 @@ def plant_create_view(request, username, *args, **kwargs):
             form.cleaned_data['user'] = request.user # Set to the current logged in user
             # save the info
             form.save()
-            return redirect("home")
+            return redirect("plant_list", username)
     else: # GET request
         form = PlantForm()
         form.initial['user'] = request.user.id # Set to the current logged in user
@@ -367,7 +395,7 @@ def plant_update_view(request, username, plant_id, *args, **kwargs):
             form.cleaned_data['user'] = request.user # Set to the current logged in user
             # save the info
             form.save()
-            return redirect("home")
+            return redirect("plant_list", username)
     else: # GET request
         form = PlantForm(instance=instance)
         form.initial['user'] = request.user.id # Set to the current logged in user
