@@ -12,31 +12,31 @@
       <ul class="navbar-nav navbar-left me-auto mb-2 mb-sm-0">
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link text-light" href="{% url 'home' %}">My Gardens</a>
+          <a class="nav-link text-light text-bg-dark bg-opacity-10 rounded mx-1" href="{% url 'home' %}">My Gardens</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-light" href="{% url 'garden_list' request.user.username %}">Manage Gardens</a>
+          <a class="nav-link text-light text-bg-dark bg-opacity-10 rounded mx-1" href="{% url 'garden_list' request.user.username %}">Manage Gardens</a>
         </li>
         <li class="nav-item">
           <!-- <a class="nav-link  text-light" href="{% url 'plant_create' request.user.username %}">Create Plant</a> -->
         </li>
         <li class="nav-item">
-          <a class="nav-link text-light" href="{% url 'plant_list' request.user.username %}">Manage Plants</a>
+          <a class="nav-link text-light text-bg-dark bg-opacity-10 rounded mx-1" href="{% url 'plant_list' request.user.username %}">Manage Plants</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-light" href="{% url 'plant_category_list' request.user.username %}">Manage Plant Categories</a>
+          <a class="nav-link text-light text-bg-dark bg-opacity-10 rounded mx-1" href="{% url 'plant_category_list' request.user.username %}">Manage Plant Categories</a>
         </li>
         {% endif %}
       </ul>
       <ul class="navbar-nav navbar-right ms-auto mb-2 mb-sm-0">
         {% if not user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link btn bd-btn-secondary text-light" href="{% url 'users:login' %}">Login / Register</a>
+          <a class="nav-link btn bd-btn-secondary text-light text-bg-dark bg-opacity-10 rounded" href="{% url 'users:login' %}">Login / Register</a>
         </li>
         {% else %}
         <li class="nav-item">
           <div class="btn-group">
-            <button type="button" class="dropdown-toggle btn bd-btn-secondary text-light" data-bs-toggle="dropdown" data-bs-target="#dropdown-profile" aria-expanded="false">
+            <button type="button" class="dropdown-toggle btn bd-btn-secondary text-light text-bg-dark bg-opacity-10 rounded" data-bs-toggle="dropdown" data-bs-target="#dropdown-profile" aria-expanded="false">
               Hello,
               {{ user.username }}
             </button>
