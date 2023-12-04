@@ -7,13 +7,41 @@
 
 {% block content %}
 {% load static %}
+{% load query_transform %}
 <h1>Manage Plants</h1>
 
 <div class="card shadow">
   <div class="card-body">
     <p class="card-text">
-    <!-- Start of Add Button -->
+      <!-- Start of Add Button -->
     <div class="d-flex">
+      <!-- Start of search -->
+      <div class="flex-fill">    
+        <form method="GET">
+          <div class="d-flex flex-row">
+            <div class="flex-grow-1 me-1">
+              <div class="input-group">
+                <div class="input-group-text bg-primary">
+                  <span class="text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                  </span>
+                </div>
+                <input type="search" class="form-control" name="plant_name" placeholder="Search...">
+              </div>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Submit">
+          </div>
+        </form>
+
+        
+      </div>
+      <!-- End of search -->
+      <!-- Place Holder to empty fill -->
+      <div class="flex-fill">
+      </div>
+      <!-- End of Place Holder to empty fill -->
       <div class="ms-auto">
         <a href="{% url 'plant_create' request.user.username %}" class="btn btn-primary shadow-sm ms-auto">
           Create Plant
@@ -24,8 +52,7 @@
       </div>
     </div>
     <!-- End of Add Button -->
-
-    <table class="table">
+    <table class="table my-2">
       <thead>
         <tr>
           <th scope="col">#</th>
@@ -72,6 +99,77 @@
         {% endfor %}
       </tbody>
     </table>
+    <!-- Pagination -->
+    <ul class="pagination justify-content-center">
+      <!-- Display up to 9 items for pagination 1 ... 3 4 5 6 7 ... 9 -->
+      <!-- Based off of https://nemecek.be/blog/105/how-to-use-elided-pagination-in-django-and-solve-too-many-pages-problem -->
+      <!-- Get current page number -->
+      <!-- Check if it is within 2 of the end -->
+      <ul class="pagination justify-content-center flex-wrap mt-2 mb-4">
+        {% if plants.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?{% query_transform page=1 %}">First</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" href="?{% query_transform page=1 %}">First</a>
+        </li>
+        {% endif %}
+  
+        <!-- Start of previous button -->
+        {% if plants.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?{% query_transform page=plants.previous_page_number %}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link">Previous</a>
+        </li>
+        {% endif %}
+        <!-- End of previous button -->
+        <!-- Start of main links -->
+        {% for i in page_range|default_if_none:plants.paginator.get_elided_page_range %}
+        {% if plants.number == i %}
+        <li class="page-item active">
+          <a class="page-link">
+            {{ i }}</a>
+        </li>
+  
+        {% else %}
+        {% if i == plants.paginator.ELLIPSIS %}
+        <li class="page-item">
+          <a class="page-link">
+            {{ i }}</a>
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?{% query_transform page=i %}">
+            {{ i }}</a>
+        </li>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        <!-- End of main links -->
+        <!-- Start of next -->
+        {% if plants.has_next %}
+        <li class="page-item"><a class="page-link" href="?{% query_transform page=plants.next_page_number %}">Next</a></li>
+        {% else %}
+        <li class="disabled page-item"><span class="page-link">Next</span></li>
+        {% endif %}
+        <!-- End of next -->
+  
+        {% if plants.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?{% query_transform page=plants.paginator.num_pages %}">Last</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link">Last</a>
+        </li>
+        {% endif %}
+        </li>
+      </ul>  
+    <!-- End of Pagination -->
     </p>
   </div>
 </div>

@@ -5,6 +5,7 @@ from gardens.models import Garden, Garden_Section, Plant, Plant_Category, Plant_
 from .forms import GardenForm, Garden_SectionForm, PlantForm, Plant_CategoryForm, Plant_LogForm, Garden_Section_Date_Form, Plant_NoteForm
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 # Create your views here.
 def home_view(request, *args, **kwargs):
@@ -304,9 +305,28 @@ def plant_list_view(request, username, *args, **kwargs):
     current_user = request.user 
     if(current_user.username != username):
         return redirect("home") 
+    
+    user_plant_list = Plant.objects.filter(user=current_user)
+
+    # Filter dynamicly with a form 
+    # Filter based on variables for a book name
+    plant_name = request.GET.get("plant_name")
+    if plant_name != "" and plant_name is not None:
+        user_plant_list = user_plant_list.filter(variety__icontains = plant_name)
+
+    paginator = Paginator(user_plant_list, 25)  # Show 25 contacts per page.
+
+    page_number = request.GET.get("page")
+    if page_number == "" or page_number == None:
+        page_number = 1
+    
+    plant_paginator = paginator.get_page(page_number)
+    page_range = paginator.get_elided_page_range(number=page_number) # add ellipsis
+
 
     my_context = {
-        "plants": Plant.objects.filter(user=current_user),
+        "plants": plant_paginator,
+        "page_range": page_range,
         "site_title": "My Gardens"
     }
     return render(request, "users/plant/plant_list.html", my_context) # return an html template
