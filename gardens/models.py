@@ -40,7 +40,7 @@ class Plant(models.Model):
         category = self.category
 
         if(category is not None):
-            return self.variety + " - " + category.name
+            return  category.name + " - " + self.variety 
         
         return self.variety
     

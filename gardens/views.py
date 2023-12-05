@@ -167,7 +167,7 @@ def garden_section_list_view(request, username, garden_id, *args, **kwargs):
     plant_log_form = Plant_LogForm()
     plant_log_form.initial['garden'] = instance
 
-    user_plant_list = Plant.objects.filter(user=request.user.id)
+    user_plant_list = Plant.objects.filter(user=request.user.id).order_by('category__name', 'variety')
     plant_log_form.fields['plant'].queryset = user_plant_list
 
     my_context = {
